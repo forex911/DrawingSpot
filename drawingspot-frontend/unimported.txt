@@ -1,0 +1,33 @@
+﻿
+       summary               unimported v1.31.0 (node)
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+       entry file          : src/main.jsx
+
+       unresolved imports  : 0
+       unused dependencies : 1
+       unimported files    : 9
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+     Γöé 1 unused dependencies
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+   1 Γöé lucide-react
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓö¼ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+     Γöé 9 unimported files
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓö╝ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+   1 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\common\Button.jsx
+   2 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\common\Loader.jsx
+   3 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\gallery\GalleryCard.jsx
+   4 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\gallery\GalleryGrid.jsx
+   5 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\home\ArtistSpotlight.jsx
+   6 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\home\PressSection.jsx
+   7 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\home\Services.jsx
+   8 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\order\OrderForm.jsx
+   9 Γöé C:\Users\SIVAL\Documents\projects\DrawingSpot\drawingspot-frontend\src\components\pricing\PricingTable.jsx
+ΓöÇΓöÇΓöÇΓöÇΓöÇΓö┤ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+
+
+       Inspect the results and run npx unimported -u to update ignore lists

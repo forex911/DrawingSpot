@@ -1,0 +1,208 @@
+/* ========================= */
+/* GOOGLE FONTS              */
+/* ========================= */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+/* ========================= */
+/* CSS DESIGN TOKENS         */
+/* ========================= */
+:root {
+  --bg:        #FAF8F3;
+  --gold:      #C9A84C;
+  --gold-lt:   #E8D49A;
+  --dark:      #1C1C1C;
+  --charcoal:  #2C2C2C;
+  --muted:     #6B6560;
+  --card-bg:   #FFFFFF;
+  --cream-dk:  #F0EBE1;
+  --border:    rgba(201,168,76,0.3);
+  --font-head: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --radius:    12px;
+  --shadow-sm: 0 4px 16px rgba(28,28,28,0.06);
+  --shadow-md: 0 12px 32px rgba(28,28,28,0.12);
+  --shadow-lg: 0 24px 60px rgba(28,28,28,0.18);
+  --trans:     0.3s ease;
+}
+
+/* ========================= */
+/* RESET & GLOBAL            */
+/* ========================= */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg);
+  color: var(--dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: var(--trans);
+}
+
+button {
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: var(--trans);
+  border: none;
+  outline: none;
+}
+
+ul { list-style: none; }
+
+/* ========================= */
+/* TYPOGRAPHY                */
+/* ========================= */
+h1, h2, h3, h4 {
+  font-family: var(--font-head);
+  line-height: 1.2;
+  color: var(--dark);
+}
+
+h1 { font-size: clamp(2.2rem, 5vw, 4rem); font-weight: 700; }
+h2 { font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 600; }
+h3 { font-size: 1.3rem; font-weight: 600; }
+h4 { font-size: 1.05rem; font-weight: 500; }
+
+p {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+/* ========================= */
+/* SECTION BASE              */
+/* ========================= */
+section {
+  width: 100%;
+  padding: 80px 8%;
+}
+
+.section-tag {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  color: var(--dark);
+  margin-bottom: 14px;
+}
+
+.section-sub {
+  color: var(--muted);
+  max-width: 520px;
+  margin: 0 auto;
+  font-size: 1rem;
+}
+
+/* ========================= */
+/* BUTTONS                   */
+/* ========================= */
+.btn-primary {
+  background: var(--gold);
+  color: var(--dark);
+  padding: 13px 30px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.92rem;
+  letter-spacing: 0.04em;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.35);
+}
+
+.btn-primary:hover {
+  background: #b5922f;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(201,168,76,0.45);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--dark);
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.92rem;
+  border: 1.5px solid var(--dark);
+}
+
+.btn-outline:hover {
+  background: var(--dark);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-outline-gold {
+  background: transparent;
+  color: var(--gold);
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.88rem;
+  border: 1.5px solid var(--gold);
+}
+
+.btn-outline-gold:hover {
+  background: var(--gold);
+  color: var(--dark);
+}
+
+/* ========================= */
+/* FORM INPUTS               */
+/* ========================= */
+input, select, textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  border-radius: var(--radius);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+}
+
+/* ========================= */
+/* GALLERY GRID (global)     */
+/* ========================= */
+.gallery-grid {
+  display: grid;
+  gap: 20px;
+}
+
+@media (min-width: 1024px) {
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 1023px) {
+  .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .gallery-grid { grid-template-columns: 1fr; }
+  section { padding: 60px 5%; }
+}
