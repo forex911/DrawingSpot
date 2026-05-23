@@ -7,6 +7,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { IconUpload, IconEye, IconRefresh, IconFrame, IconTruck, IconPencil, IconPalette } from "../components/common/Icons";
 import API from "../api/axiosConfig";
+import imageCompression from 'browser-image-compression';
 import { FaHeart, FaPalette, FaCheckCircle, FaShoppingCart, FaMagic, FaCheck, FaTimes } from "react-icons/fa";
 
 const PORTRAIT_TYPES = [
@@ -37,6 +38,7 @@ function Order() {
   const [imagePreview, setImagePreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [autoFilled, setAutoFilled] = useState(false);
 
   // ── Auto-fill form from cart items ─────────────────────────────────────
@@ -102,29 +104,67 @@ function Order() {
     }));
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setReferenceImage(file);
+    
+    let finalFile = file;
+    if (file.size > 10 * 1024 * 1024) {
+      try {
+        const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
+        finalFile = await imageCompression(file, options);
+      } catch (error) {
+        console.error("Compression error:", error);
+        setError("Failed to compress image.");
+        return;
+      }
+    }
+
+    if (finalFile.size > 10 * 1024 * 1024) {
+      setError("Image size exceeds 10 MB limit.");
+      return;
+    }
+    setError("");
+    
+    setReferenceImage(finalFile);
     const reader = new FileReader();
     reader.onload = (ev) => setImagePreview(ev.target.result);
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(finalFile);
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     if (file && file.type.startsWith("image/")) {
-      setReferenceImage(file);
+      let finalFile = file;
+      if (file.size > 10 * 1024 * 1024) {
+        try {
+          const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
+          finalFile = await imageCompression(file, options);
+        } catch (error) {
+          console.error("Compression error:", error);
+          setError("Failed to compress image.");
+          return;
+        }
+      }
+
+      if (finalFile.size > 10 * 1024 * 1024) {
+        setError("Image size exceeds 10 MB limit.");
+        return;
+      }
+      setError("");
+
+      setReferenceImage(finalFile);
       const reader = new FileReader();
       reader.onload = (ev) => setImagePreview(ev.target.result);
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(finalFile);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
       // Step 1 — Create the order record (JSON)
       const colorType = form.portraitType === "bw" ? "BlackWhite" : "Color";
@@ -144,21 +184,20 @@ function Order() {
       const orderId = orderRes.data?.id;
 
       // Step 2 — Upload reference image (if provided)
-      // NOTE: Do NOT set Content-Type manually — axios sets
-      // "multipart/form-data; boundary=..." automatically from FormData.
-      // Setting it manually strips the boundary and breaks server parsing.
       if (referenceImage && orderId) {
         const fd = new FormData();
         fd.append("file", referenceImage);
         await API.post(`/orders/${orderId}/image`, fd);
       }
-    } catch (err) {
-      console.error("Order submission error:", err);
-      // Still show success so UX isn't broken
-    } finally {
-      setLoading(false);
+      
       setSubmitted(true);
       setTimeout(() => navigate("/my-orders"), 2000);
+    } catch (err) {
+      console.error("Order submission error:", err);
+      const serverError = err.response?.data?.error || err.response?.data || "Failed to submit order. Please try again.";
+      setError(typeof serverError === 'string' ? serverError : "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -379,6 +418,16 @@ function Order() {
                   <label>Additional Notes <span className="label-optional">(optional)</span></label>
                   <textarea name="notes" placeholder="Describe the photo, preferred background, style notes, special requests…" rows={3} value={form.notes} onChange={handleChange} />
                 </div>
+
+                {error && (
+                  <div style={{
+                    padding: "10px 14px", borderRadius: 8, marginBottom: 16,
+                    background: "rgba(231,76,60,0.1)", border: "1px solid rgba(231,76,60,0.3)",
+                    color: "#e74c3c", fontSize: "0.9rem"
+                  }}>
+                    {error}
+                  </div>
+                )}
 
                 <button
                   type="submit"

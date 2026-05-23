@@ -5,6 +5,7 @@ import Footer from "../components/layout/Footer";
 import API from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
 import { FaUser, FaLock, FaMapMarkerAlt, FaSmile, FaImage } from "react-icons/fa";
+import imageCompression from 'browser-image-compression';
 import "../App.css";
 
 function Dashboard() {
@@ -85,11 +86,28 @@ function Dashboard() {
     const file = e.target.files[0];
     if (!file) return;
 
+    let finalFile = file;
+    if (file.size > 10 * 1024 * 1024) {
+      try {
+        const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
+        finalFile = await imageCompression(file, options);
+      } catch (error) {
+        console.error("Compression error:", error);
+        setProfileMessage({ text: "Failed to compress image.", type: "error" });
+        return;
+      }
+    }
+
+    if (finalFile.size > 10 * 1024 * 1024) {
+      setProfileMessage({ text: "Image size exceeds 10 MB limit.", type: "error" });
+      return;
+    }
+
     setAvatarUploading(true);
     setProfileMessage({ text: "", type: "" });
     try {
       const fd = new FormData();
-      fd.append("file", file);
+      fd.append("file", finalFile);
       const res = await API.post(`/auth/${userId}/profile-picture`, fd);
       setProfileForm(prev => ({ ...prev, profilePicture: res.data.profilePicture }));
       setProfileMessage({ text: "Profile picture uploaded successfully!", type: "success" });
