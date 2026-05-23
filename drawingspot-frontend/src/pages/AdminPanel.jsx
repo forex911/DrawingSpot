@@ -142,19 +142,19 @@ function AdminPanel() {
         if (userRole !== "ADMIN") return;
 
         fetchOrders(false); // initial load
-        fetchUnreadCounts();
+        // fetchUnreadCounts(); // Temporarily disabled
         fetchFeedbacks();
         fetchGallery();
         fetchPricing();
         // Auto-refresh every 10 seconds
         pollerRef.current = setInterval(() => {
             fetchOrders(true);
-            fetchUnreadCounts();
+            // fetchUnreadCounts(); // Temporarily disabled
         }, POLL_INTERVAL);
         return () => {
             if (pollerRef.current) clearInterval(pollerRef.current);
         };
-    }, [userRole, fetchOrders, fetchUnreadCounts]);
+    }, [userRole, fetchOrders]);
 
     // ── Status update ─────────────────────────────────────────
     const handleStatusChange = async (orderId, newStatus) => {
@@ -282,6 +282,7 @@ function AdminPanel() {
                         }}>
                         <FaBox style={{ marginRight: 6 }} /> Orders
                     </button>
+                    {/* Temporarily disabled Chat Button
                     <button
                         onClick={() => setViewMode("Chats")}
                         style={{
@@ -293,6 +294,7 @@ function AdminPanel() {
                         }}>
                         <FaCommentDots style={{ marginRight: 6 }} /> Chats
                     </button>
+                    */}
                     <button
                         onClick={() => { setViewMode("Feedbacks"); fetchFeedbacks(); }}
                         style={{

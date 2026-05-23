@@ -36,10 +36,11 @@ function AppRoutes() {
       <BrowserRouter>
         <ScrollToTop />
         <CartDrawer />
-        {/* Global floating chat popup — shown on all pages when chat icon is clicked */}
+        {/* Global floating chat popup — temporarily disabled
         {isAuthenticated && userId && (
           <UserChat conversationUserId={userId} />
         )}
+        */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pricing" element={<Pricing />} />
