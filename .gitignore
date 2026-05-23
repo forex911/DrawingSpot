@@ -6,3 +6,8 @@ target/
 
 # Frontend images
 drawingspot-frontend/src/assets/images/
+
+# Sensitive config files — never commit real credentials
+.env
+*.env
+drawingspot-backend/src/main/resources/application.properties

@@ -28,13 +28,14 @@ spring.datasource.hikari.minimum-idle=5
 spring.datasource.hikari.idle-timeout=30000
 
 # ===============================
-# JWT CONFIG (Optional)
+# JWT CONFIG
 # ===============================
-jwt.secret=mySecretKeyForDrawingSpotApplication123456
+# Generate a strong random secret: e.g., openssl rand -hex 32
+jwt.secret=CHANGE_ME_USE_A_LONG_RANDOM_SECRET_AT_LEAST_32_CHARS
 jwt.expiration=3600000
 
 # ===============================
-# LOGGING (Optional)
+# LOGGING
 # ===============================
 logging.level.org.springframework.security=INFO
 
