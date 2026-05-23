@@ -29,14 +29,18 @@ public class OrderController {
     // ── Upload Reference Image for an Order ───────────────────────────────
     // POST /api/orders/{id}/image (multipart/form-data, field name = "file")
     @PostMapping("/{id}/image")
-    public ResponseEntity<Order> uploadImage(
+    public ResponseEntity<?> uploadImage(
             @PathVariable Long id,
-            @RequestParam("file") MultipartFile file) throws IOException {
-
-        // Upload to Cloudinary
-        String imageUrl = cloudinaryService.uploadImage(file);
-        Order updated = orderService.updateOrderImage(id, imageUrl);
-        return ResponseEntity.ok(updated);
+            @RequestParam("file") MultipartFile file) {
+        try {
+            // Upload to Cloudinary
+            String imageUrl = cloudinaryService.uploadImage(file);
+            Order updated = orderService.updateOrderImage(id, imageUrl);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
+        }
     }
 
     // ── Get All Orders ─────────────────────────────────────────────────────

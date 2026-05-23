@@ -27,14 +27,18 @@ public class GalleryController {
 
     // Upload Image File
     @PostMapping("/{id}/image")
-    public ResponseEntity<Gallery> uploadImage(
+    public ResponseEntity<?> uploadImage(
             @PathVariable Long id,
-            @RequestParam("file") MultipartFile file) throws IOException {
-
-        String imageUrl = cloudinaryService.uploadImage(file);
-        Gallery gallery = galleryService.getImageById(id).orElseThrow(() -> new RuntimeException("Gallery item not found"));
-        gallery.setImageUrl(imageUrl);
-        return ResponseEntity.ok(galleryService.addImage(gallery));
+            @RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = cloudinaryService.uploadImage(file);
+            Gallery gallery = galleryService.getImageById(id).orElseThrow(() -> new RuntimeException("Gallery item not found"));
+            gallery.setImageUrl(imageUrl);
+            return ResponseEntity.ok(galleryService.addImage(gallery));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Upload failed: " + e.getMessage());
+        }
     }
 
     // Get All Images
