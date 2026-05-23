@@ -10,7 +10,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/gallery")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:5173")
 public class GalleryController {
 
     private final GalleryService galleryService;
