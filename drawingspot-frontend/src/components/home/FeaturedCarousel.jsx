@@ -171,7 +171,7 @@ function FeaturedCarousels() {
                 const bwItems = featured.filter(item => item.colorType === "BlackWhite").map(item => ({
                     id: item.id,
                     title: item.description || "Graphite Portrait",
-                    artist: "DrawingSpot Artist",
+                    artist: item.category || "Single",
                     price: getPrice(item),
                     originalPrice: item.originalPrice || "",
                     badge: item.size || "A4",
@@ -181,7 +181,7 @@ function FeaturedCarousels() {
                 const colorItems = featured.filter(item => item.colorType !== "BlackWhite").map(item => ({
                     id: item.id,
                     title: item.description || "Colour Portrait",
-                    artist: "DrawingSpot Artist",
+                    artist: item.category || "Single",
                     price: getPrice(item),
                     originalPrice: item.originalPrice || "",
                     badge: item.size || "A4",
