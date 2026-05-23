@@ -12,7 +12,7 @@ function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const { totalItems, setIsOpen } = useCart();
-  const { isAuthenticated, userId, setIsChatOpen, isChatOpen } = useAuth();
+  const { isAuthenticated, userId, userRole, setIsChatOpen, isChatOpen } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
@@ -39,8 +39,16 @@ function Navbar() {
     { to: "/", label: "Home" },
     { to: "/gallery", label: "Gallery" },
     { to: "/pricing", label: "Pricing" },
-    isAuthenticated ? { to: "/dashboard", label: "Profile" } : { to: "/login", label: "Login" },
   ];
+
+  if (isAuthenticated) {
+    if (userRole === "ADMIN") {
+      links.push({ to: "/admin", label: "Admin Panel" });
+    }
+    links.push({ to: "/dashboard", label: "Profile" });
+  } else {
+    links.push({ to: "/login", label: "Login" });
+  }
 
   const handleChatClick = (e) => {
     e.preventDefault();

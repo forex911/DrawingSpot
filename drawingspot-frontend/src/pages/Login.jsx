@@ -41,7 +41,11 @@ function Login() {
     try {
       const res = await API.post("/auth/login", form);
       login(res.data);
-      navigate(redirectTo);
+      if (res.data.role === "ADMIN") {
+        navigate("/admin");
+      } else {
+        navigate(redirectTo);
+      }
     } catch {
       setError("Invalid email or password. Please try again.");
     } finally {
@@ -66,7 +70,11 @@ function Login() {
         //    would never match the google_${sub} password used in the old flow.
         const loginRes = await API.post("/auth/google-login", { name, email, googleId: sub });
         login(loginRes.data);
-        navigate(redirectTo);
+        if (loginRes.data.role === "ADMIN") {
+          navigate("/admin");
+        } else {
+          navigate(redirectTo);
+        }
       } catch {
         setError("Google sign-in failed. Please try again.");
       }
