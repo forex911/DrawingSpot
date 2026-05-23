@@ -61,7 +61,7 @@ DrawingSpot is a commission-based art platform where:
 
 ```
 DrawingSpot/
-├── drawingspot/                  # Spring Boot backend
+├── drawingspot-backend/          # Spring Boot backend
 │   ├── src/
 │   │   └── main/
 │   │       ├── java/com/example/drawingspot/
@@ -166,7 +166,7 @@ cd DrawingSpot
 
 ### 2. Configure application properties
 
-Open `drawingspot/src/main/resources/application.properties` and update the database credentials:
+Open `drawingspot-backend/src/main/resources/application.properties` and update the database credentials:
 
 ```properties
 # PostgreSQL connection
@@ -186,7 +186,7 @@ jwt.expiration=3600000
 Navigate into the backend directory and use the Maven wrapper:
 
 ```bash
-cd drawingspot
+cd drawingspot-backend
 
 # On macOS / Linux
 ./mvnw spring-boot:run
@@ -289,7 +289,7 @@ Run both servers simultaneously in **separate terminals**:
 
 **Terminal 1 — Backend:**
 ```bash
-cd DrawingSpot/drawingspot
+cd DrawingSpot/drawingspot-backend
 .\mvnw.cmd spring-boot:run
 ```
 
