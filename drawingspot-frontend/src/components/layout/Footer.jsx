@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaInstagram, FaPinterest, FaWhatsapp, FaPalette, FaMapMarkerAlt } from "react-icons/fa";
+import API from "../../api/axiosConfig";
 import "../../App.css";
 
 function Footer() {
@@ -19,17 +20,9 @@ function Footer() {
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:8080/api/newsletter/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await response.text();
-      setMessage(data);
-      if (response.ok) {
-        setEmail("");
-      }
+      const response = await API.post("/newsletter/subscribe", { email });
+      setMessage(response.data);
+      setEmail("");
     } catch (error) {
       setMessage("Failed to subscribe. Please try again later.");
     } finally {

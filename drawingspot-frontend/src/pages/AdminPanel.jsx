@@ -551,11 +551,14 @@ function AdminPanel() {
                                         {/* Reference Image */}
                                         <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid var(--border)" }}>
                                             <p style={{ fontSize: "0.68rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Reference Photo</p>
-                                            {order.referenceImagePath ? (
+                                            {order.referenceImagePath ? (() => {
+                                                const baseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "");
+                                                const fullPath = order.referenceImagePath.startsWith("http") ? order.referenceImagePath : `${baseUrl}${order.referenceImagePath}`;
+                                                return (
                                                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                                                    <a href={`http://localhost:8080${order.referenceImagePath}`} target="_blank" rel="noreferrer">
+                                                    <a href={fullPath} target="_blank" rel="noreferrer">
                                                         <img
-                                                            src={`http://localhost:8080${order.referenceImagePath}`}
+                                                            src={fullPath}
                                                             alt="Reference"
                                                             style={{
                                                                 width: 80, height: 80, objectFit: "cover",
@@ -567,14 +570,15 @@ function AdminPanel() {
                                                         />
                                                     </a>
                                                     <a
-                                                        href={`http://localhost:8080${order.referenceImagePath}`}
+                                                        href={fullPath}
                                                         target="_blank" rel="noreferrer"
                                                         style={{ fontSize: "0.82rem", color: "var(--gold)", fontWeight: 600, textDecoration: "none" }}
                                                     >
                                                         <FaSearchPlus style={{ marginRight: 6 }} /> View Full Size ↗
                                                     </a>
                                                 </div>
-                                            ) : (
+                                                );
+                                            })() : (
                                                 <span style={{
                                                     fontSize: "0.78rem", color: "var(--muted)",
                                                     padding: "4px 10px", borderRadius: 20,
@@ -749,7 +753,7 @@ function AdminPanel() {
                         <div className="gallery-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
                             {gallery.map(img => (
                                 <div key={img.id} style={{ position: "relative", borderRadius: 12, overflow: "hidden", border: "1px solid var(--border)" }}>
-                                    <img src={img.imageUrl.startsWith("http") ? img.imageUrl : `http://localhost:8080${img.imageUrl}`} alt={img.category} style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
+                                    <img src={img.imageUrl.startsWith("http") ? img.imageUrl : `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "")}${img.imageUrl}`} alt={img.category} style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
                                         onError={(e) => { e.target.src = "https://via.placeholder.com/300?text=Image+Not+Found"; }} />
                                     <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.7)", color: "#fff", padding: "8px 12px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                         <div>

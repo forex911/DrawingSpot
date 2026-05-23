@@ -139,6 +139,7 @@ function Order() {
     } finally {
       setLoading(false);
       setSubmitted(true);
+      setTimeout(() => navigate("/my-orders"), 2000);
     }
   };
 

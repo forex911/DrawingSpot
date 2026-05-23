@@ -12,7 +12,7 @@ function GalleryCard({ art }) {
   return (
     <div className="gallery-item">
       <img
-        src={art.imageUrl.startsWith("http") ? art.imageUrl : `http://localhost:8080${art.imageUrl}`}
+        src={art.imageUrl.startsWith("http") ? art.imageUrl : `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "")}${art.imageUrl}`}
         alt={art.category}
         loading="lazy"
         onError={(e) => { e.target.src = "https://via.placeholder.com/400x500?text=Image+Not+Found"; }}

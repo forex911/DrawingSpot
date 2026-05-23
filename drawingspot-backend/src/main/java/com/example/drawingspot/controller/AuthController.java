@@ -48,12 +48,7 @@ public class AuthController {
                 return buildUserResponse(found);
             }
 
-            // Identify if this is a Google-only account (either flag is true, or legacy
-            // Google account with no phone number)
-            boolean isGoogleAccount = found.isGoogleUser() ||
-                    (found.getPhoneNumber() == null || found.getPhoneNumber().trim().isEmpty());
-
-            if (isGoogleAccount) {
+            if (found.isGoogleUser()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                         "This account uses Google Sign-In. Please click the Google button.");
             }
@@ -128,12 +123,7 @@ public class AuthController {
         response.put("email", user.getEmail());
         response.put("role", user.getRole());
 
-        // Dynamically detect legacy Google users who don't have the flag but have no
-        // phone number
-        boolean isGoogleUser = user.isGoogleUser() ||
-                (user.getPhoneNumber() == null || user.getPhoneNumber().trim().isEmpty());
-
-        response.put("isGoogleUser", isGoogleUser);
+        response.put("isGoogleUser", user.isGoogleUser());
         return response;
     }
 }

@@ -227,9 +227,12 @@ function MyOrders() {
                                     >
                                         <div style={{ display: "flex", gap: 14 }}>
                                             {/* Mini Thumbnail */}
-                                            {order.referenceImagePath && (
+                                            {order.referenceImagePath && (() => {
+                                                const baseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "");
+                                                const fullPath = order.referenceImagePath.startsWith("http") ? order.referenceImagePath : `${baseUrl}${order.referenceImagePath}`;
+                                                return (
                                                 <img
-                                                    src={`http://localhost:8080${order.referenceImagePath}`}
+                                                    src={fullPath}
                                                     alt="Thumbnail"
                                                     style={{
                                                         width: 44, height: 44, borderRadius: 8,
@@ -237,7 +240,8 @@ function MyOrders() {
                                                         background: "var(--card-hover)"
                                                     }}
                                                 />
-                                            )}
+                                                );
+                                            })()}
                                             <div>
                                                 <p style={{ fontSize: "0.72rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 4 }}>
                                                     Order #{order.id} · {formatDate(order.createdAt)}
@@ -288,12 +292,15 @@ function MyOrders() {
                                             </div>
 
                                             {/* Reference image */}
-                                            {order.referenceImagePath && (
+                                            {order.referenceImagePath && (() => {
+                                                const baseUrl = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "");
+                                                const fullPath = order.referenceImagePath.startsWith("http") ? order.referenceImagePath : `${baseUrl}${order.referenceImagePath}`;
+                                                return (
                                                 <div>
                                                     <p style={{ fontSize: "0.67rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 8 }}>Your Reference Photo</p>
-                                                    <a href={`http://localhost:8080${order.referenceImagePath}`} target="_blank" rel="noreferrer">
+                                                    <a href={fullPath} target="_blank" rel="noreferrer">
                                                         <img
-                                                            src={`http://localhost:8080${order.referenceImagePath}`}
+                                                            src={fullPath}
                                                             alt="Reference"
                                                             style={{
                                                                 width: 100, height: 100, objectFit: "cover",
@@ -305,7 +312,8 @@ function MyOrders() {
                                                         />
                                                     </a>
                                                 </div>
-                                            )}
+                                                );
+                                            })()}
 
                                             {/* Delivery address */}
                                             {order.deliveryAddress && (
