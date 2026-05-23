@@ -116,7 +116,7 @@ function Order() {
       setUploadProgress(0);
       try {
         const options = { 
-          maxSizeMB: 9.9, 
+          maxSizeMB: 9.5, 
           maxWidthOrHeight: 4096, 
           useWebWorker: true,
           onProgress: (p) => setUploadProgress(p)
@@ -133,7 +133,7 @@ function Order() {
     }
 
     if (finalFile.size > 10 * 1024 * 1024) {
-      setError("Image size exceeds 10 MB limit.");
+      setError("Image exceeds Cloudinary's 10 MB limit. Please use a smaller image.");
       return;
     }
     setError("");
@@ -154,7 +154,7 @@ function Order() {
         setUploadProgress(0);
         try {
           const options = { 
-            maxSizeMB: 9.9, 
+            maxSizeMB: 9.5, 
             maxWidthOrHeight: 4096, 
             useWebWorker: true,
             onProgress: (p) => setUploadProgress(p)
@@ -171,7 +171,7 @@ function Order() {
       }
 
       if (finalFile.size > 10 * 1024 * 1024) {
-        setError("Image size exceeds 10 MB limit.");
+        setError("Image exceeds Cloudinary's 10 MB limit. Please use a smaller image.");
         return;
       }
       setError("");

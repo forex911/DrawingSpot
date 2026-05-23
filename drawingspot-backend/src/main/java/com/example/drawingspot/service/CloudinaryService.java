@@ -17,10 +17,11 @@ public class CloudinaryService {
     private Cloudinary cloudinary;
 
     public String uploadImage(MultipartFile file) throws IOException {
-        // Upload image to Cloudinary
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+        // Stream upload to Cloudinary (avoids loading entire file into memory)
+        Map uploadResult = cloudinary.uploader().upload(file.getInputStream(), ObjectUtils.asMap(
                 "folder", "drawingspot",
-                "public_id", UUID.randomUUID().toString()
+                "public_id", UUID.randomUUID().toString(),
+                "resource_type", "auto"
         ));
         
         // Return the secure URL

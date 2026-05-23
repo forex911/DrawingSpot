@@ -98,7 +98,7 @@ function Dashboard() {
       try {
         setUploadPhase("Compressing...");
         const options = { 
-          maxSizeMB: 9.9, 
+          maxSizeMB: 9.5, 
           maxWidthOrHeight: 4096, 
           useWebWorker: true,
           onProgress: (p) => setUploadProgress(p)
@@ -114,7 +114,7 @@ function Dashboard() {
     }
 
     if (finalFile.size > 10 * 1024 * 1024) {
-      setProfileMessage({ text: "Image size exceeds 10 MB limit.", type: "error" });
+      setProfileMessage({ text: "Image exceeds Cloudinary's 10 MB limit. Please use a smaller image.", type: "error" });
       setAvatarUploading(false);
       return;
     }
