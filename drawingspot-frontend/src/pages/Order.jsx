@@ -202,13 +202,16 @@ function Order() {
         ...(userId ? { user: { id: Number(userId) } } : {}),
       };
 
+      console.log("Step 1 — Creating order with payload:", JSON.stringify(payload));
       const orderRes = await API.post("/orders", payload);
       const orderId = orderRes.data?.id;
+      console.log("Step 1 — Order created with ID:", orderId);
 
       // Step 2 — Upload reference image (if provided)
       if (referenceImage && orderId) {
         setUploadPhase("Uploading...");
         setUploadProgress(0);
+        console.log("Step 2 — Uploading image:", referenceImage.name, "Size:", (referenceImage.size / 1024 / 1024).toFixed(2) + "MB", "Type:", referenceImage.type);
         try {
           const fd = new FormData();
           fd.append("file", referenceImage);
@@ -220,7 +223,9 @@ function Order() {
               }
             }
           });
+          console.log("Step 2 — Image uploaded successfully");
         } catch (uploadError) {
+          console.error("Step 2 — Image upload failed:", uploadError.response?.status, uploadError.response?.data);
           // Rollback the order if the image fails to upload
           try { await API.delete(`/orders/${orderId}`); } catch(e) {}
           throw uploadError;
@@ -233,6 +238,8 @@ function Order() {
       setTimeout(() => navigate("/my-orders"), 2000);
     } catch (err) {
       console.error("Order submission error:", err);
+      console.error("Response status:", err.response?.status);
+      console.error("Response data:", err.response?.data);
       const serverError = err.response?.data?.error || err.response?.data || "Failed to submit order. Please try again.";
       setError(typeof serverError === 'string' ? serverError : "An unexpected error occurred.");
     } finally {
