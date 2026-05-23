@@ -48,3 +48,10 @@ spring.servlet.multipart.max-request-size=20MB
 
 # Directory where reference images are stored on disk
 upload.dir=uploads/orders
+
+# ===============================
+# CORS CONFIG
+# ===============================
+# Comma-separated list of allowed frontend origins
+# Example for production: https://your-app.vercel.app
+cors.allowed-origins=http://localhost:5173
