@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../App.css";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
@@ -213,16 +214,29 @@ function Order() {
         setUploadProgress(0);
         console.log("Step 2 — Uploading image:", referenceImage.name, "Size:", (referenceImage.size / 1024 / 1024).toFixed(2) + "MB", "Type:", referenceImage.type);
         try {
+          // Direct upload to Cloudinary (bypasses Render backend limits)
           const fd = new FormData();
           fd.append("file", referenceImage);
-          await API.post(`/orders/${orderId}/image`, fd, {
-            onUploadProgress: (progressEvent) => {
-              if (progressEvent.total) {
-                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                setUploadProgress(percentCompleted);
+          fd.append("upload_preset", "DRAWINGSOPT");
+
+          const cloudinaryRes = await axios.post(
+            `https://api.cloudinary.com/v1_1/dfnzagl9p/image/upload`,
+            fd,
+            {
+              onUploadProgress: (progressEvent) => {
+                if (progressEvent.total) {
+                  const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                  setUploadProgress(percentCompleted);
+                }
               }
             }
-          });
+          );
+          
+          const imageUrl = cloudinaryRes.data.secure_url;
+          
+          // Save the URL to our database
+          await API.put(`/orders/${orderId}/image-url?imageUrl=${encodeURIComponent(imageUrl)}`);
+          
           console.log("Step 2 — Image uploaded successfully");
         } catch (uploadError) {
           console.error("Step 2 — Image upload failed:", uploadError.response?.status, uploadError.response?.data);

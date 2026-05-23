@@ -43,6 +43,20 @@ public class OrderController {
         }
     }
 
+    // ── Update Reference Image URL (Direct Upload) ────────────────────────
+    @PutMapping("/{id}/image-url")
+    public ResponseEntity<?> updateImageUrl(
+            @PathVariable Long id,
+            @RequestParam("imageUrl") String imageUrl) {
+        try {
+            Order updated = orderService.updateOrderImage(id, imageUrl);
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Failed to update image URL: " + e.getMessage());
+        }
+    }
+
     // ── Get All Orders ─────────────────────────────────────────────────────
     @GetMapping
     public List<Order> getAllOrders() {

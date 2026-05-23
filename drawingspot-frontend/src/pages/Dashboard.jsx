@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import API from "../api/axiosConfig";
@@ -122,15 +123,30 @@ function Dashboard() {
     setUploadPhase("Uploading...");
     setUploadProgress(0);
     try {
+      // Direct upload to Cloudinary
       const fd = new FormData();
       fd.append("file", finalFile);
-      const res = await API.post(`/auth/${userId}/profile-picture`, fd, {
-        onUploadProgress: (progressEvent) => {
-          if (progressEvent.total) {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setUploadProgress(percentCompleted);
+      fd.append("upload_preset", "DRAWINGSOPT");
+
+      const cloudinaryRes = await axios.post(
+        `https://api.cloudinary.com/v1_1/dfnzagl9p/image/upload`,
+        fd,
+        {
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent.total) {
+              const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              setUploadProgress(percentCompleted);
+            }
           }
         }
+      );
+      
+      const imageUrl = cloudinaryRes.data.secure_url;
+      
+      // Update profile with the new URL
+      const res = await API.put("/auth/profile", {
+        id: userId,
+        profilePicture: imageUrl
       });
       setProfileForm(prev => ({ ...prev, profilePicture: res.data.profilePicture }));
       setProfileMessage({ text: "Profile picture uploaded successfully!", type: "success" });
