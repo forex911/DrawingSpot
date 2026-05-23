@@ -70,7 +70,7 @@ function AdminPanel() {
     const [feedbacks, setFeedbacks] = useState([]);
     const [gallery, setGallery] = useState([]);
     const [pricing, setPricing] = useState([]);
-    const [galleryForm, setGalleryForm] = useState({ imageUrl: "", category: "Single", description: "" });
+    const [galleryForm, setGalleryForm] = useState({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
     const [pricingForm, setPricingForm] = useState({ size: "", type: "Single", colorType: "Color", price: "" });
     const pollerRef = useRef(null);
 
@@ -195,7 +195,7 @@ function AdminPanel() {
         try {
             const res = await API.post("/gallery", galleryForm);
             setGallery([...gallery, res.data]);
-            setGalleryForm({ imageUrl: "", category: "Single", description: "" });
+            setGalleryForm({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
         } catch (err) {
             alert("Failed to add gallery item");
             console.error(err);
@@ -741,11 +741,34 @@ function AdminPanel() {
                                     </select>
                                 </div>
                                 <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label>Description (Optional)</label>
+                                    <label>Description</label>
                                     <input type="text" value={galleryForm.description} onChange={e => setGalleryForm({ ...galleryForm, description: e.target.value })} placeholder="Short detail" />
                                 </div>
-                                <div style={{ gridColumn: "span 3" }}>
-                                    <button type="submit" className="btn-primary" style={{ padding: "10px 24px", borderRadius: 8 }}>Add Image</button>
+                                <div className="form-group" style={{ marginBottom: 0 }}>
+                                    <label>Size Badge</label>
+                                    <input type="text" value={galleryForm.size} onChange={e => setGalleryForm({ ...galleryForm, size: e.target.value })} placeholder="e.g. A4" />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: 0 }}>
+                                    <label>Price</label>
+                                    <input type="text" value={galleryForm.price} onChange={e => setGalleryForm({ ...galleryForm, price: e.target.value })} placeholder="e.g. ₹2,500" />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: 0 }}>
+                                    <label>Original Price</label>
+                                    <input type="text" value={galleryForm.originalPrice} onChange={e => setGalleryForm({ ...galleryForm, originalPrice: e.target.value })} placeholder="e.g. ₹3,000" />
+                                </div>
+                                <div className="form-group" style={{ marginBottom: 0 }}>
+                                    <label>Color Type</label>
+                                    <select value={galleryForm.colorType} onChange={e => setGalleryForm({ ...galleryForm, colorType: e.target.value })}>
+                                        <option value="BlackWhite">Black & White</option>
+                                        <option value="Color">Color</option>
+                                    </select>
+                                </div>
+                                <div className="form-group" style={{ marginBottom: 0, flexDirection: "row", alignItems: "center" }}>
+                                    <input type="checkbox" checked={galleryForm.isFeatured} onChange={e => setGalleryForm({ ...galleryForm, isFeatured: e.target.checked })} style={{ width: "auto", margin: 0, marginTop: 4, transform: "scale(1.2)" }} />
+                                    <label style={{ margin: 0, marginLeft: 10, cursor: "pointer" }} onClick={() => setGalleryForm({ ...galleryForm, isFeatured: !galleryForm.isFeatured })}>Show on Home Page Carousel</label>
+                                </div>
+                                <div style={{ gridColumn: "span 1", textAlign: "right" }}>
+                                    <button type="submit" className="btn-primary" style={{ padding: "12px 24px", borderRadius: 8 }}>Add Image</button>
                                 </div>
                             </form>
                         </div>

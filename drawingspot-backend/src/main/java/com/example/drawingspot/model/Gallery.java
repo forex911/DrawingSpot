@@ -22,4 +22,14 @@ public class Gallery {
 
     @Column(length = 1000)
     private String description;
+
+    private String size;
+
+    private String price;
+
+    private String originalPrice;
+
+    private Boolean isFeatured;
+
+    private String colorType; // "BlackWhite" or "Color"
 }

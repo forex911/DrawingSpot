@@ -1,7 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { IconHeart, IconCart } from "../common/Icons";
+import API from "../../api/axiosConfig";
 import "../../App.css";
 const imageModules = import.meta.glob(
     "../../assets/images/**/*.{jpg,jpeg,png,webp}",
@@ -149,9 +150,63 @@ function ScrollCarousel({ sectionData }) {
 }
 
 function FeaturedCarousels() {
+    const [sections, setSections] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        API.get("/gallery")
+            .then(res => {
+                const data = Array.isArray(res.data) ? res.data : [];
+                const featured = data.filter(item => item.isFeatured);
+
+                const bwItems = featured.filter(item => item.colorType === "BlackWhite").map(item => ({
+                    id: item.id,
+                    title: item.description || "Graphite Portrait",
+                    artist: "DrawingSpot Artist",
+                    price: item.price || "Contact for price",
+                    originalPrice: item.originalPrice || "",
+                    badge: item.size || "A4",
+                    img: item.imageUrl.startsWith("http") ? item.imageUrl : `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "")}${item.imageUrl}`
+                }));
+
+                const colorItems = featured.filter(item => item.colorType !== "BlackWhite").map(item => ({
+                    id: item.id,
+                    title: item.description || "Colour Portrait",
+                    artist: "DrawingSpot Artist",
+                    price: item.price || "Contact for price",
+                    originalPrice: item.originalPrice || "",
+                    badge: item.size || "A4",
+                    img: item.imageUrl.startsWith("http") ? item.imageUrl : `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "")}${item.imageUrl}`
+                }));
+
+                const dynamicSections = [];
+                if (bwItems.length > 0) {
+                    dynamicSections.push({
+                        title: "Black & White",
+                        sub: "Classic pencil & graphite portraits — timeless and detailed.",
+                        items: bwItems
+                    });
+                }
+                if (colorItems.length > 0) {
+                    dynamicSections.push({
+                        title: "Colour Portraits",
+                        sub: "Rich layered colour with premium materials — more depth, more life.",
+                        items: colorItems
+                    });
+                }
+
+                setSections(dynamicSections);
+            })
+            .catch(err => console.error("Failed to load featured carousel:", err))
+            .finally(() => setLoading(false));
+    }, []);
+
+    if (loading) return null; // Or a loading spinner
+
+    // If no dynamic sections are found, fallback to the hardcoded ones if you wanted to, but we will just render dynamic.
     return (
         <>
-            {SECTIONS.map((s) => <ScrollCarousel key={s.title} sectionData={s} />)}
+            {sections.map((s) => <ScrollCarousel key={s.title} sectionData={s} />)}
         </>
     );
 }
