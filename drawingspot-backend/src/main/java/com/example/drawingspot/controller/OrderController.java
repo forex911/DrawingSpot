@@ -2,6 +2,7 @@ package com.example.drawingspot.controller;
 
 import com.example.drawingspot.model.Order;
 import com.example.drawingspot.service.OrderService;
+import com.example.drawingspot.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -9,12 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -22,9 +18,7 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
-
-    @Value("${upload.dir:uploads/orders}")
-    private String uploadDir;
+    private final CloudinaryService cloudinaryService;
 
     // ── Create Order (JSON body) ───────────────────────────────────────────
     @PostMapping
@@ -39,22 +33,8 @@ public class OrderController {
             @PathVariable Long id,
             @RequestParam("file") MultipartFile file) throws IOException {
 
-        // Save to <project-root>/uploads/orders/
-        Path dir = Paths.get(uploadDir);
-        Files.createDirectories(dir);
-
-        // Use orderId + UUID suffix to avoid collisions / cache issues
-        String ext = "";
-        String original = file.getOriginalFilename();
-        if (original != null && original.contains(".")) {
-            ext = original.substring(original.lastIndexOf('.'));
-        }
-        String filename = id + "_" + UUID.randomUUID().toString().substring(0, 8) + ext;
-        Path dest = dir.resolve(filename);
-        Files.copy(file.getInputStream(), dest, StandardCopyOption.REPLACE_EXISTING);
-
-        // Save the public URL path on the order record
-        String imageUrl = "/uploads/orders/" + filename;
+        // Upload to Cloudinary
+        String imageUrl = cloudinaryService.uploadImage(file);
         Order updated = orderService.updateOrderImage(id, imageUrl);
         return ResponseEntity.ok(updated);
     }
