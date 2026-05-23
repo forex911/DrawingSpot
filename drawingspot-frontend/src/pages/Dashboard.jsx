@@ -127,7 +127,12 @@ function Dashboard() {
             Loading your profile…
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
+          <>
+            <style>{`
+              .profile-layout { display: grid; gap: 32px; grid-template-columns: 1fr; align-items: start; }
+              @media (min-width: 900px) { .profile-layout { grid-template-columns: 2fr 1.1fr; } }
+            `}</style>
+            <div className="profile-layout">
 
             {/* Profile Information */}
             <div className="auth-card" style={{ padding: "32px", maxWidth: "100%" }}>
@@ -283,7 +288,7 @@ function Dashboard() {
               </form>
             </div>
 
-            <div style={{ textAlign: "center", marginTop: 12 }}>
+            <div style={{ textAlign: "center", marginTop: 12, gridColumn: "1 / -1" }}>
               <button
                 onClick={() => { logout(); navigate("/"); }}
                 style={{ background: "none", border: "none", color: "var(--error)", fontSize: "0.9rem", cursor: "pointer", textDecoration: "underline", fontWeight: 600 }}
@@ -292,6 +297,7 @@ function Dashboard() {
               </button>
             </div>
           </div>
+          </>
         )}
       </div>
 
