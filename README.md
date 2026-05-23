@@ -404,6 +404,6 @@ Then restart the backend — Hibernate will recreate the schema automatically.
 
 <div align="center">
 
-Made with ❤️ by the DrawingSpot team
+Made with ❤️ 
 
 </div>
