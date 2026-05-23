@@ -28,5 +28,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/uploads/orders/**")
                 .addResourceLocations(resourceLocation);
+
+        Path galleryPath = Paths.get("uploads/gallery").toAbsolutePath();
+        String galleryLocation = "file:" + galleryPath + "/";
+        registry.addResourceHandler("/uploads/gallery/**")
+                .addResourceLocations(galleryLocation);
     }
 }

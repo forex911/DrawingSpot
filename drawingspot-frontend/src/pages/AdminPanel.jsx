@@ -71,6 +71,7 @@ function AdminPanel() {
     const [gallery, setGallery] = useState([]);
     const [pricing, setPricing] = useState([]);
     const [galleryForm, setGalleryForm] = useState({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
+    const [galleryFile, setGalleryFile] = useState(null);
     const [pricingForm, setPricingForm] = useState({ size: "", type: "Single", colorType: "Color", price: "" });
     const [editPricingId, setEditPricingId] = useState(null);
     const [editPricingForm, setEditPricingForm] = useState(null);
@@ -194,10 +195,29 @@ function AdminPanel() {
     // ── Manage Gallery & Pricing Actions ──────────────────────
     const handleAddGallery = async (e) => {
         e.preventDefault();
+        if (!galleryForm.imageUrl && !galleryFile) {
+            alert("Please provide an Image URL or select an Image file.");
+            return;
+        }
         try {
-            const res = await API.post("/gallery", galleryForm);
-            setGallery([...gallery, res.data]);
+            if (galleryFile) {
+                // Post gallery without imageUrl first
+                const res = await API.post("/gallery", { ...galleryForm, imageUrl: "" });
+                const createdGallery = res.data;
+
+                // Then upload file
+                const formData = new FormData();
+                formData.append("file", galleryFile);
+                const uploadRes = await API.post(`/gallery/${createdGallery.id}/image`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" }
+                });
+                setGallery([...gallery, uploadRes.data]);
+            } else {
+                const res = await API.post("/gallery", galleryForm);
+                setGallery([...gallery, res.data]);
+            }
             setGalleryForm({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
+            setGalleryFile(null);
         } catch (err) {
             alert("Failed to add gallery item");
             console.error(err);
@@ -743,13 +763,26 @@ function AdminPanel() {
                 )}
 
                 {viewMode === "Gallery" && (
-                    <div>
-                        <div className="auth-card" style={{ padding: "24px 28px", marginBottom: 24 }}>
+                    <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
+                        <div className="auth-card" style={{ padding: "24px 28px", marginBottom: 24, maxWidth: "100%" }}>
                             <h3 style={{ fontFamily: "var(--font-head)", marginBottom: 16 }}>Add New Image Request</h3>
                             <form onSubmit={handleAddGallery} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, alignItems: "end" }}>
                                 <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label>Image URL</label>
-                                    <input type="text" value={galleryForm.imageUrl} onChange={e => setGalleryForm({ ...galleryForm, imageUrl: e.target.value })} required placeholder="e.g. /images/portrait1.jpg" />
+                                    <label>Image</label>
+                                    {galleryFile ? (
+                                        <div style={{ padding: "10px", background: "rgba(0,0,0,0.05)", borderRadius: 8, fontSize: "0.85rem", display: "flex", justifyContent: "space-between", alignItems: "center", border: "1px solid var(--border)" }}>
+                                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{galleryFile.name}</span>
+                                            <button type="button" onClick={() => setGalleryFile(null)} style={{ background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer", fontWeight: "bold" }}>✕</button>
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: "flex", gap: 8 }}>
+                                            <input type="text" value={galleryForm.imageUrl} onChange={e => setGalleryForm({ ...galleryForm, imageUrl: e.target.value })} placeholder="URL (e.g. /img.jpg)" style={{ flex: 1, minWidth: 0 }} />
+                                            <label style={{ background: "var(--gold)", color: "#000", padding: "0 14px", borderRadius: 8, display: "flex", alignItems: "center", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600, flexShrink: 0 }}>
+                                                Upload File
+                                                <input type="file" style={{ display: "none" }} accept="image/*" onChange={e => setGalleryFile(e.target.files[0])} />
+                                            </label>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="form-group" style={{ marginBottom: 0 }}>
                                     <label>Category</label>
@@ -813,8 +846,8 @@ function AdminPanel() {
                 )}
 
                 {viewMode === "Pricing" && (
-                    <div>
-                        <div className="auth-card" style={{ padding: "24px 28px", marginBottom: 24 }}>
+                    <div style={{ maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
+                        <div className="auth-card" style={{ padding: "24px 28px", marginBottom: 24, maxWidth: "100%" }}>
                             <h3 style={{ fontFamily: "var(--font-head)", marginBottom: 16 }}>Add Pricing Rule</h3>
                             <form onSubmit={handleAddPricing} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16, alignItems: "end" }}>
                                 <div className="form-group" style={{ marginBottom: 0 }}>
@@ -846,7 +879,7 @@ function AdminPanel() {
                             </form>
                         </div>
 
-                        <div className="auth-card" style={{ padding: 0, overflow: "hidden" }}>
+                        <div className="auth-card" style={{ padding: 0, overflow: "hidden", maxWidth: "100%" }}>
                             <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}>
                                 <thead>
                                     <tr style={{ background: "rgba(0,0,0,0.03)", borderBottom: "1px solid var(--border)" }}>
