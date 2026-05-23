@@ -15,6 +15,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.drawingspot.model.User;
 import com.example.drawingspot.service.UserService;
+import com.example.drawingspot.service.CloudinaryService;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
 
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +28,7 @@ public class AuthController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
+    private final CloudinaryService cloudinaryService;
 
     // Register
     @PostMapping("/register")
@@ -138,6 +142,21 @@ public class AuthController {
         
         User updatedUser = userService.updateProfile(userId, updates);
         return buildUserResponse(updatedUser);
+    }
+
+    @PostMapping("/{id}/profile-picture")
+    public ResponseEntity<?> uploadProfilePicture(
+            @org.springframework.web.bind.annotation.PathVariable Long id,
+            @org.springframework.web.bind.annotation.RequestParam("file") MultipartFile file) {
+        try {
+            String imageUrl = cloudinaryService.uploadImage(file);
+            User updatedUser = userService.updateProfilePicture(id, imageUrl);
+            return ResponseEntity.ok(buildUserResponse(updatedUser));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Upload failed: " + e.getMessage()));
+        }
     }
 
     // ── helpers ──────────────────────────────────────────────────────────────

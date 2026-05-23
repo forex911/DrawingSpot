@@ -13,6 +13,7 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
   const [profileSaving, setProfileSaving] = useState(false);
+  const [avatarUploading, setAvatarUploading] = useState(false);
   const [profileMessage, setProfileMessage] = useState({ text: "", type: "" });
 
   const [profileForm, setProfileForm] = useState({
@@ -77,6 +78,26 @@ function Dashboard() {
       setProfileMessage({ text: "Failed to update profile. Please try again.", type: "error" });
     } finally {
       setProfileSaving(false);
+    }
+  };
+
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setAvatarUploading(true);
+    setProfileMessage({ text: "", type: "" });
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await API.post(`/auth/${userId}/profile-picture`, fd);
+      setProfileForm(prev => ({ ...prev, profilePicture: res.data.profilePicture }));
+      setProfileMessage({ text: "Profile picture uploaded successfully!", type: "success" });
+    } catch (err) {
+      console.error(err);
+      setProfileMessage({ text: err.response?.data?.error || "Failed to upload profile picture.", type: "error" });
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -166,10 +187,9 @@ function Dashboard() {
                     )}
                   </div>
                   <div className="form-group" style={{ marginBottom: 0, flex: 1 }}>
-                    <label><FaImage style={{ marginRight: 6 }} /> Profile Picture URL</label>
-                    <input type="text" placeholder="https://example.com/avatar.jpg"
-                      value={profileForm.profilePicture}
-                      onChange={e => setProfileForm({ ...profileForm, profilePicture: e.target.value })} />
+                    <label><FaImage style={{ marginRight: 6 }} /> Profile Picture</label>
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={avatarUploading} />
+                    {avatarUploading && <span style={{ fontSize: "0.85rem", color: "var(--gold)", display: "block", marginTop: 4 }}>Uploading to Cloudinary...</span>}
                   </div>
                 </div>
 

@@ -24,4 +24,7 @@ public interface UserService {
 
     // Update profile
     User updateProfile(Long userId, User updatedDetails);
+
+    // Update profile picture
+    User updateProfilePicture(Long userId, String imageUrl);
 }

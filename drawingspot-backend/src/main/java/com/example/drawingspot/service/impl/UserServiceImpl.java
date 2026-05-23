@@ -75,4 +75,12 @@ public class UserServiceImpl implements UserService {
         
         return userRepository.save(user);
     }
+
+    @Override
+    public User updateProfilePicture(Long userId, String imageUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setProfilePicture(imageUrl);
+        return userRepository.save(user);
+    }
 }
