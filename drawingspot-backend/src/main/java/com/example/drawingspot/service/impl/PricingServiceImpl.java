@@ -35,4 +35,14 @@ public class PricingServiceImpl implements PricingService {
     public void deletePricing(Long id) {
         pricingRepository.deleteById(id);
     }
+
+    @Override
+    public Pricing updatePricing(Long id, Pricing pricingDetails) {
+        Pricing pricing = pricingRepository.findById(id).orElseThrow(() -> new RuntimeException("Pricing rule not found"));
+        pricing.setSize(pricingDetails.getSize());
+        pricing.setType(pricingDetails.getType());
+        pricing.setColorType(pricingDetails.getColorType());
+        pricing.setPrice(pricingDetails.getPrice());
+        return pricingRepository.save(pricing);
+    }
 }

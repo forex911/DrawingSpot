@@ -43,4 +43,10 @@ public class PricingController {
         pricingService.deletePricing(id);
         return "Pricing Deleted Successfully";
     }
+
+    // Update Pricing
+    @PutMapping("/{id}")
+    public Pricing updatePricing(@PathVariable Long id, @RequestBody Pricing pricing) {
+        return pricingService.updatePricing(id, pricing);
+    }
 }

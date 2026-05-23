@@ -18,4 +18,7 @@ public interface PricingService {
 
     // Delete pricing
     void deletePricing(Long id);
+
+    // Update pricing
+    Pricing updatePricing(Long id, Pricing pricing);
 }

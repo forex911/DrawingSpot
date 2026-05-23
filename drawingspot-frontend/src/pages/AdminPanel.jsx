@@ -72,6 +72,8 @@ function AdminPanel() {
     const [pricing, setPricing] = useState([]);
     const [galleryForm, setGalleryForm] = useState({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
     const [pricingForm, setPricingForm] = useState({ size: "", type: "Single", colorType: "Color", price: "" });
+    const [editPricingId, setEditPricingId] = useState(null);
+    const [editPricingForm, setEditPricingForm] = useState(null);
     const pollerRef = useRef(null);
 
     // ── Fetch orders ──────────────────────────────────────────
@@ -232,6 +234,23 @@ function AdminPanel() {
             setPricing(pricing.filter(p => p.id !== id));
         } catch (err) {
             alert("Failed to delete pricing rule");
+            console.error(err);
+        }
+    };
+
+    const handleEditPricing = (p) => {
+        setEditPricingId(p.id);
+        setEditPricingForm({ ...p });
+    };
+
+    const handleSavePricing = async () => {
+        try {
+            const res = await API.put(`/pricing/${editPricingId}`, { ...editPricingForm, price: parseFloat(editPricingForm.price) });
+            setPricing(pricing.map(p => p.id === editPricingId ? res.data : p));
+            setEditPricingId(null);
+            setEditPricingForm(null);
+        } catch (err) {
+            alert("Failed to update pricing rule");
             console.error(err);
         }
     };
@@ -839,19 +858,53 @@ function AdminPanel() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {pricing.map(p => (
-                                        <tr key={p.id} style={{ borderBottom: "1px solid var(--border)" }}>
-                                            <td style={{ padding: "14px 20px", fontWeight: 600 }}>{p.size}</td>
-                                            <td style={{ padding: "14px 20px" }}>{p.type}</td>
-                                            <td style={{ padding: "14px 20px" }}>{p.colorType === "BlackWhite" ? "Black & White" : p.colorType}</td>
-                                            <td style={{ padding: "14px 20px", color: "var(--gold)", fontWeight: 700 }}>₹{p.price.toLocaleString("en-IN")}</td>
-                                            <td style={{ padding: "14px 20px", textAlign: "right" }}>
-                                                <button onClick={() => handleDeletePricing(p.id)} style={{ background: "#e74c3c", color: "#fff", border: "none", borderRadius: 4, padding: "6px 12px", cursor: "pointer", fontSize: "0.75rem" }}>
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
+                                    {pricing.map(p => {
+                                        if (editPricingId === p.id) {
+                                            return (
+                                                <tr key={p.id} style={{ borderBottom: "1px solid var(--border)", background: "rgba(212, 175, 55, 0.05)" }}>
+                                                    <td style={{ padding: "14px 20px" }}>
+                                                        <input type="text" value={editPricingForm.size} onChange={e => setEditPricingForm({ ...editPricingForm, size: e.target.value })} style={{ width: "100%", padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg)" }} />
+                                                    </td>
+                                                    <td style={{ padding: "14px 20px" }}>
+                                                        <select value={editPricingForm.type} onChange={e => setEditPricingForm({ ...editPricingForm, type: e.target.value })} style={{ width: "100%", padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg)" }}>
+                                                            <option value="Single">Single</option>
+                                                            <option value="Couple">Couple</option>
+                                                            <option value="Family">Family</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style={{ padding: "14px 20px" }}>
+                                                        <select value={editPricingForm.colorType} onChange={e => setEditPricingForm({ ...editPricingForm, colorType: e.target.value })} style={{ width: "100%", padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg)" }}>
+                                                            <option value="Color">Color</option>
+                                                            <option value="BlackWhite">Black & White</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style={{ padding: "14px 20px" }}>
+                                                        <input type="number" value={editPricingForm.price} onChange={e => setEditPricingForm({ ...editPricingForm, price: e.target.value })} style={{ width: "80px", padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg)" }} />
+                                                    </td>
+                                                    <td style={{ padding: "14px 20px", textAlign: "right", display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                                                        <button onClick={handleSavePricing} style={{ background: "var(--gold)", color: "#000", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}>Save</button>
+                                                        <button onClick={() => setEditPricingId(null)} style={{ background: "transparent", border: "1.5px solid var(--border)", color: "var(--muted)", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}>Cancel</button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                        return (
+                                            <tr key={p.id} style={{ borderBottom: "1px solid var(--border)", transition: "background 0.2s" }} onMouseOver={e => e.currentTarget.style.background = "rgba(0,0,0,0.02)"} onMouseOut={e => e.currentTarget.style.background = "transparent"}>
+                                                <td style={{ padding: "14px 20px", fontWeight: 600 }}>{p.size}</td>
+                                                <td style={{ padding: "14px 20px" }}>{p.type}</td>
+                                                <td style={{ padding: "14px 20px" }}>{p.colorType === "BlackWhite" ? "Black & White" : p.colorType}</td>
+                                                <td style={{ padding: "14px 20px", color: "var(--gold)", fontWeight: 700 }}>₹{p.price.toLocaleString("en-IN")}</td>
+                                                <td style={{ padding: "14px 20px", textAlign: "right", display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                                                    <button onClick={() => handleEditPricing(p)} style={{ background: "rgba(0,0,0,0.05)", color: "var(--text)", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600, transition: "0.2s" }} onMouseOver={e => e.target.style.background = "rgba(0,0,0,0.1)"} onMouseOut={e => e.target.style.background = "rgba(0,0,0,0.05)"}>
+                                                        Edit
+                                                    </button>
+                                                    <button onClick={() => handleDeletePricing(p.id)} style={{ background: "#e74c3c", color: "#fff", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}>
+                                                        Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
                                     {pricing.length === 0 && (
                                         <tr><td colSpan="5" style={{ padding: "20px", textAlign: "center", color: "var(--muted)" }}>No pricing rules set.</td></tr>
                                     )}
