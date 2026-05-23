@@ -20,8 +20,7 @@ public class CloudinaryService {
         // Upload image to Cloudinary
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                 "folder", "drawingspot",
-                "public_id", UUID.randomUUID().toString(),
-                "resource_type", "auto"
+                "public_id", UUID.randomUUID().toString()
         ));
         
         // Return the secure URL
