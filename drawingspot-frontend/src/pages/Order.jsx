@@ -74,6 +74,25 @@ function Order() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Run only on mount so manual changes aren't overwritten
 
+  // ── Auto-fill address from user profile ────────────────────────────────
+  useEffect(() => {
+    if (isAuthenticated && userId && !form.deliveryAddress) {
+      API.get(`/auth/${userId}`)
+        .then((res) => {
+          const data = res.data;
+          const fullAddress = [data.address, data.city, data.state, data.country, data.pincode]
+            .filter(Boolean)
+            .join(", ");
+          
+          if (fullAddress) {
+            setForm((prev) => ({ ...prev, deliveryAddress: fullAddress }));
+          }
+        })
+        .catch((err) => console.error("Could not fetch user profile for address fill", err));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, userId]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({
