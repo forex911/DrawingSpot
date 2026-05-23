@@ -70,7 +70,7 @@ function AdminPanel() {
     const [feedbacks, setFeedbacks] = useState([]);
     const [gallery, setGallery] = useState([]);
     const [pricing, setPricing] = useState([]);
-    const [galleryForm, setGalleryForm] = useState({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
+    const [galleryForm, setGalleryForm] = useState({ imageUrl: "", category: "Single", description: "", size: "A4", colorType: "BlackWhite", isFeatured: false });
     const [galleryFile, setGalleryFile] = useState(null);
     const [pricingForm, setPricingForm] = useState({ size: "", type: "Single", colorType: "Color", price: "" });
     const [editPricingId, setEditPricingId] = useState(null);
@@ -216,7 +216,7 @@ function AdminPanel() {
                 const res = await API.post("/gallery", galleryForm);
                 setGallery([...gallery, res.data]);
             }
-            setGalleryForm({ imageUrl: "", category: "Single", description: "", size: "", price: "", originalPrice: "", colorType: "BlackWhite", isFeatured: false });
+            setGalleryForm({ imageUrl: "", category: "Single", description: "", size: [...new Set(pricing.map(p => p.size))][0] || "A4", colorType: "BlackWhite", isFeatured: false });
             setGalleryFile(null);
         } catch (err) {
             alert("Failed to add gallery item");
@@ -797,16 +797,13 @@ function AdminPanel() {
                                     <input type="text" value={galleryForm.description} onChange={e => setGalleryForm({ ...galleryForm, description: e.target.value })} placeholder="Short detail" />
                                 </div>
                                 <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label>Size Badge</label>
-                                    <input type="text" value={galleryForm.size} onChange={e => setGalleryForm({ ...galleryForm, size: e.target.value })} placeholder="e.g. A4" />
-                                </div>
-                                <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label>Price</label>
-                                    <input type="text" value={galleryForm.price} onChange={e => setGalleryForm({ ...galleryForm, price: e.target.value })} placeholder="e.g. ₹2,500" />
-                                </div>
-                                <div className="form-group" style={{ marginBottom: 0 }}>
-                                    <label>Original Price</label>
-                                    <input type="text" value={galleryForm.originalPrice} onChange={e => setGalleryForm({ ...galleryForm, originalPrice: e.target.value })} placeholder="e.g. ₹3,000" />
+                                    <label>Size</label>
+                                    <select value={galleryForm.size} onChange={e => setGalleryForm({ ...galleryForm, size: e.target.value })}>
+                                        {pricing.length === 0 && <option value="A4">A4 (Add in Pricing)</option>}
+                                        {[...new Set(pricing.map(p => p.size))].map(sz => (
+                                            <option key={sz} value={sz}>{sz}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div className="form-group" style={{ marginBottom: 0 }}>
                                     <label>Color Type</label>
