@@ -21,4 +21,7 @@ public interface UserService {
 
     // Set/update password (for Google users enabling email login)
     void setPassword(Long userId, String newPassword);
+
+    // Update profile
+    User updateProfile(Long userId, User updatedDetails);
 }

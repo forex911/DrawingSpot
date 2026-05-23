@@ -34,6 +34,20 @@ public class User {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "profile_picture")
+    private String profilePicture;
+
+    @Column(unique = true)
+    private String username;
+
+    private String country;
+    private String state;
+    private String city;
+    private String pincode;
+
+    @Column(columnDefinition = "TEXT")
+    private String address;
+
     @Column(name = "is_google_user", nullable = false, columnDefinition = "boolean default false")
     private boolean isGoogleUser = false;
 

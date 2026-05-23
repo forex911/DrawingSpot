@@ -46,6 +46,7 @@ function Navbar() {
       links.push({ to: "/admin", label: "Admin Panel" });
     }
     links.push({ to: "/dashboard", label: "Profile" });
+    links.push({ to: "/my-orders", label: "My Orders" });
   } else {
     links.push({ to: "/login", label: "Login" });
   }

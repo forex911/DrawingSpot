@@ -114,6 +114,32 @@ public class AuthController {
         return buildUserResponse(updatedUser);
     }
 
+    @org.springframework.web.bind.annotation.GetMapping("/{id}")
+    public Map<String, Object> getUserProfile(@org.springframework.web.bind.annotation.PathVariable Long id) {
+        User user = userService.getUserById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return buildUserResponse(user);
+    }
+
+    @PutMapping("/profile")
+    public Map<String, Object> updateProfile(@RequestBody Map<String, String> payload) {
+        Long userId = Long.valueOf(payload.get("id"));
+        
+        User updates = new User();
+        if (payload.containsKey("name")) updates.setName(payload.get("name"));
+        if (payload.containsKey("username")) updates.setUsername(payload.get("username"));
+        if (payload.containsKey("phoneNumber")) updates.setPhoneNumber(payload.get("phoneNumber"));
+        if (payload.containsKey("profilePicture")) updates.setProfilePicture(payload.get("profilePicture"));
+        if (payload.containsKey("country")) updates.setCountry(payload.get("country"));
+        if (payload.containsKey("state")) updates.setState(payload.get("state"));
+        if (payload.containsKey("city")) updates.setCity(payload.get("city"));
+        if (payload.containsKey("pincode")) updates.setPincode(payload.get("pincode"));
+        if (payload.containsKey("address")) updates.setAddress(payload.get("address"));
+        
+        User updatedUser = userService.updateProfile(userId, updates);
+        return buildUserResponse(updatedUser);
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private Map<String, Object> buildUserResponse(User user) {
@@ -124,6 +150,14 @@ public class AuthController {
         response.put("role", user.getRole());
 
         response.put("isGoogleUser", user.isGoogleUser());
+        response.put("profilePicture", user.getProfilePicture());
+        response.put("username", user.getUsername());
+        response.put("phoneNumber", user.getPhoneNumber());
+        response.put("country", user.getCountry());
+        response.put("state", user.getState());
+        response.put("city", user.getCity());
+        response.put("pincode", user.getPincode());
+        response.put("address", user.getAddress());
         return response;
     }
 }

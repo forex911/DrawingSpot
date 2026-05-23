@@ -379,7 +379,7 @@ function MyOrders() {
                             + Place Another Order
                         </Link>
                         <Link to="/dashboard" style={{ fontSize: "0.85rem", color: "var(--muted)" }}>
-                            ← Back to Dashboard
+                            ← Back to Profile
                         </Link>
                     </div>
                 )}

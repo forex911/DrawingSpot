@@ -57,4 +57,22 @@ public class UserServiceImpl implements UserService {
         user.setGoogleUser(false); // They now have a real password, so they can use normal login
         userRepository.save(user);
     }
+
+    @Override
+    public User updateProfile(Long userId, User updatedDetails) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (updatedDetails.getName() != null) user.setName(updatedDetails.getName());
+        if (updatedDetails.getUsername() != null) user.setUsername(updatedDetails.getUsername());
+        if (updatedDetails.getPhoneNumber() != null) user.setPhoneNumber(updatedDetails.getPhoneNumber());
+        if (updatedDetails.getProfilePicture() != null) user.setProfilePicture(updatedDetails.getProfilePicture());
+        if (updatedDetails.getCountry() != null) user.setCountry(updatedDetails.getCountry());
+        if (updatedDetails.getState() != null) user.setState(updatedDetails.getState());
+        if (updatedDetails.getCity() != null) user.setCity(updatedDetails.getCity());
+        if (updatedDetails.getPincode() != null) user.setPincode(updatedDetails.getPincode());
+        if (updatedDetails.getAddress() != null) user.setAddress(updatedDetails.getAddress());
+        
+        return userRepository.save(user);
+    }
 }
