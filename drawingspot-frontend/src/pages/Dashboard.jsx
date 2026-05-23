@@ -90,7 +90,8 @@ function Dashboard() {
     if (file.size > 10 * 1024 * 1024) {
       try {
         const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
-        finalFile = await imageCompression(file, options);
+        const compressedBlob = await imageCompression(file, options);
+        finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
       } catch (error) {
         console.error("Compression error:", error);
         setProfileMessage({ text: "Failed to compress image.", type: "error" });

@@ -112,7 +112,8 @@ function Order() {
     if (file.size > 10 * 1024 * 1024) {
       try {
         const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
-        finalFile = await imageCompression(file, options);
+        const compressedBlob = await imageCompression(file, options);
+        finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
       } catch (error) {
         console.error("Compression error:", error);
         setError("Failed to compress image.");
@@ -140,7 +141,8 @@ function Order() {
       if (file.size > 10 * 1024 * 1024) {
         try {
           const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
-          finalFile = await imageCompression(file, options);
+          const compressedBlob = await imageCompression(file, options);
+          finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
         } catch (error) {
           console.error("Compression error:", error);
           setError("Failed to compress image.");
@@ -185,9 +187,15 @@ function Order() {
 
       // Step 2 — Upload reference image (if provided)
       if (referenceImage && orderId) {
-        const fd = new FormData();
-        fd.append("file", referenceImage);
-        await API.post(`/orders/${orderId}/image`, fd);
+        try {
+          const fd = new FormData();
+          fd.append("file", referenceImage);
+          await API.post(`/orders/${orderId}/image`, fd);
+        } catch (uploadError) {
+          // Rollback the order if the image fails to upload
+          try { await API.delete(`/orders/${orderId}`); } catch(e) {}
+          throw uploadError;
+        }
       }
       
       setSubmitted(true);
