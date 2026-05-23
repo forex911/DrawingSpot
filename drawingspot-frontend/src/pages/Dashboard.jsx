@@ -121,7 +121,7 @@ function Dashboard() {
         </p>
       </div>
 
-      <div style={{ maxWidth: 820, margin: "0 auto", padding: "32px 5%" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto", padding: "32px 5%" }}>
         {loading ? (
           <div style={{ textAlign: "center", padding: "60px 0", color: "var(--muted)" }}>
             Loading your profile…
@@ -130,7 +130,7 @@ function Dashboard() {
           <div style={{ display: "flex", flexDirection: "column", gap: 32 }}>
 
             {/* Profile Information */}
-            <div className="auth-card" style={{ padding: "32px" }}>
+            <div className="auth-card" style={{ padding: "32px", maxWidth: "100%" }}>
               <h2 style={{ fontFamily: "var(--font-head)", fontSize: "1.4rem", marginBottom: 24, display: "flex", alignItems: "center" }}>
                 <FaUser style={{ color: "var(--gold)", marginRight: 10 }} /> Basic Information
               </h2>
@@ -244,7 +244,7 @@ function Dashboard() {
             </div>
 
             {/* Account Information (Password) */}
-            <div className="auth-card" style={{ padding: "32px", border: isGoogleUser ? "2px solid var(--gold)" : "1px solid var(--border)" }}>
+            <div className="auth-card" style={{ padding: "32px", maxWidth: "100%", border: isGoogleUser ? "2px solid var(--gold)" : "1px solid var(--border)" }}>
               <h2 style={{ fontFamily: "var(--font-head)", fontSize: "1.4rem", marginBottom: 10, display: "flex", alignItems: "center" }}>
                 <FaLock style={{ color: "var(--gold)", marginRight: 10 }} /> Account Security
               </h2>
