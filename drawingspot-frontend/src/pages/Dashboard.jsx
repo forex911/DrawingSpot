@@ -15,6 +15,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [profileSaving, setProfileSaving] = useState(false);
   const [avatarUploading, setAvatarUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadPhase, setUploadPhase] = useState("");
   const [profileMessage, setProfileMessage] = useState({ text: "", type: "" });
 
   const [profileForm, setProfileForm] = useState({
@@ -86,30 +88,50 @@ function Dashboard() {
     const file = e.target.files[0];
     if (!file) return;
 
+    setAvatarUploading(true);
+    setUploadProgress(0);
+    setUploadPhase("Preparing...");
+    setProfileMessage({ text: "", type: "" });
+
     let finalFile = file;
     if (file.size > 10 * 1024 * 1024) {
       try {
-        const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
+        setUploadPhase("Compressing...");
+        const options = { 
+          maxSizeMB: 9.9, 
+          maxWidthOrHeight: 4096, 
+          useWebWorker: true,
+          onProgress: (p) => setUploadProgress(p)
+        };
         const compressedBlob = await imageCompression(file, options);
         finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
       } catch (error) {
         console.error("Compression error:", error);
         setProfileMessage({ text: "Failed to compress image.", type: "error" });
+        setAvatarUploading(false);
         return;
       }
     }
 
     if (finalFile.size > 10 * 1024 * 1024) {
       setProfileMessage({ text: "Image size exceeds 10 MB limit.", type: "error" });
+      setAvatarUploading(false);
       return;
     }
 
-    setAvatarUploading(true);
-    setProfileMessage({ text: "", type: "" });
+    setUploadPhase("Uploading...");
+    setUploadProgress(0);
     try {
       const fd = new FormData();
       fd.append("file", finalFile);
-      const res = await API.post(`/auth/${userId}/profile-picture`, fd);
+      const res = await API.post(`/auth/${userId}/profile-picture`, fd, {
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(percentCompleted);
+          }
+        }
+      });
       setProfileForm(prev => ({ ...prev, profilePicture: res.data.profilePicture }));
       setProfileMessage({ text: "Profile picture uploaded successfully!", type: "success" });
     } catch (err) {
@@ -117,6 +139,8 @@ function Dashboard() {
       setProfileMessage({ text: err.response?.data?.error || "Failed to upload profile picture.", type: "error" });
     } finally {
       setAvatarUploading(false);
+      setUploadPhase("");
+      setUploadProgress(0);
     }
   };
 
@@ -208,7 +232,17 @@ function Dashboard() {
                   <div className="form-group" style={{ marginBottom: 0, flex: 1 }}>
                     <label><FaImage style={{ marginRight: 6 }} /> Profile Picture</label>
                     <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={avatarUploading} />
-                    {avatarUploading && <span style={{ fontSize: "0.85rem", color: "var(--gold)", display: "block", marginTop: 4 }}>Uploading to Cloudinary...</span>}
+                    {avatarUploading && (
+                      <div style={{ marginTop: 8 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>
+                          <span>{uploadPhase}</span>
+                          <span>{uploadProgress}%</span>
+                        </div>
+                        <div style={{ width: "100%", height: 4, background: "rgba(0,0,0,0.05)", borderRadius: 2, overflow: "hidden" }}>
+                          <div style={{ width: `${uploadProgress}%`, height: "100%", background: "var(--gold)", transition: "width 0.2s" }} />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
 

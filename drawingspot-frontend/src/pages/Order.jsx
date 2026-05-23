@@ -39,6 +39,8 @@ function Order() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadPhase, setUploadPhase] = useState("");
   const [autoFilled, setAutoFilled] = useState(false);
 
   // ── Auto-fill form from cart items ─────────────────────────────────────
@@ -110,15 +112,24 @@ function Order() {
     
     let finalFile = file;
     if (file.size > 10 * 1024 * 1024) {
+      setUploadPhase("Compressing...");
+      setUploadProgress(0);
       try {
-        const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
+        const options = { 
+          maxSizeMB: 9.9, 
+          maxWidthOrHeight: 4096, 
+          useWebWorker: true,
+          onProgress: (p) => setUploadProgress(p)
+        };
         const compressedBlob = await imageCompression(file, options);
         finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
       } catch (error) {
         console.error("Compression error:", error);
         setError("Failed to compress image.");
+        setUploadPhase("");
         return;
       }
+      setUploadPhase("");
     }
 
     if (finalFile.size > 10 * 1024 * 1024) {
@@ -139,15 +150,24 @@ function Order() {
     if (file && file.type.startsWith("image/")) {
       let finalFile = file;
       if (file.size > 10 * 1024 * 1024) {
+        setUploadPhase("Compressing...");
+        setUploadProgress(0);
         try {
-          const options = { maxSizeMB: 9.9, maxWidthOrHeight: 4096, useWebWorker: true };
+          const options = { 
+            maxSizeMB: 9.9, 
+            maxWidthOrHeight: 4096, 
+            useWebWorker: true,
+            onProgress: (p) => setUploadProgress(p)
+          };
           const compressedBlob = await imageCompression(file, options);
           finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
         } catch (error) {
           console.error("Compression error:", error);
           setError("Failed to compress image.");
+          setUploadPhase("");
           return;
         }
+        setUploadPhase("");
       }
 
       if (finalFile.size > 10 * 1024 * 1024) {
@@ -187,14 +207,25 @@ function Order() {
 
       // Step 2 — Upload reference image (if provided)
       if (referenceImage && orderId) {
+        setUploadPhase("Uploading...");
+        setUploadProgress(0);
         try {
           const fd = new FormData();
           fd.append("file", referenceImage);
-          await API.post(`/orders/${orderId}/image`, fd);
+          await API.post(`/orders/${orderId}/image`, fd, {
+            onUploadProgress: (progressEvent) => {
+              if (progressEvent.total) {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                setUploadProgress(percentCompleted);
+              }
+            }
+          });
         } catch (uploadError) {
           // Rollback the order if the image fails to upload
           try { await API.delete(`/orders/${orderId}`); } catch(e) {}
           throw uploadError;
+        } finally {
+          setUploadPhase("");
         }
       }
       
@@ -413,6 +444,17 @@ function Order() {
                     style={{ display: "none" }}
                     onChange={handleImageChange}
                   />
+                  {uploadPhase === "Compressing..." && (
+                    <div style={{ marginTop: 8 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>
+                        <span>{uploadPhase}</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div style={{ width: "100%", height: 4, background: "rgba(0,0,0,0.05)", borderRadius: 2, overflow: "hidden" }}>
+                        <div style={{ width: `${uploadProgress}%`, height: "100%", background: "var(--gold)", transition: "width 0.2s" }} />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Delivery Address */}
@@ -440,10 +482,15 @@ function Order() {
                 <button
                   type="submit"
                   className="btn-primary"
-                  style={{ width: "100%", padding: "14px", borderRadius: "8px", fontSize: "1rem" }}
-                  disabled={loading}
+                  style={{ width: "100%", padding: "14px", borderRadius: "8px", fontSize: "1rem", position: "relative", overflow: "hidden" }}
+                  disabled={loading || uploadPhase === "Compressing..."}
                 >
-                  {loading ? "Placing Order…" : "Confirm Order →"}
+                  {uploadPhase === "Uploading..." && (
+                    <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: `${uploadProgress}%`, background: "rgba(255,255,255,0.2)", transition: "width 0.2s" }} />
+                  )}
+                  <span style={{ position: "relative", zIndex: 1 }}>
+                    {loading ? (uploadPhase === "Uploading..." ? `Uploading Image (${uploadProgress}%)` : "Placing Order…") : "Confirm Order →"}
+                  </span>
                 </button>
               </form>
             </div>
