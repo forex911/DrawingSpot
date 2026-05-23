@@ -73,38 +73,10 @@ function Navbar() {
           </Link>
         ))}
         <Link to="/order" className="navbar-cta">Order Now</Link>
-
-        {/* Chat */}
-        {isAuthenticated && (
-          <button className="navbar-cart-btn" onClick={handleChatClick} aria-label="Chat with support" style={{ position: "relative" }}>
-            <FaCommentDots size={20} />
-            {unreadCount > 0 && (
-              <span className="cart-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>
-            )}
-          </button>
-        )}
-
-        {/* Cart */}
-        <button className="navbar-cart-btn" onClick={() => setIsOpen(true)} aria-label={`Cart (${totalItems})`}>
-          <IconCart size={20} />
-          {totalItems > 0 && (
-            <span className="cart-badge">{totalItems > 99 ? "99+" : totalItems}</span>
-          )}
-        </button>
       </div>
 
       {/* Mobile row */}
       <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        {isAuthenticated && (
-          <button className="navbar-cart-btn mobile-cart" onClick={handleChatClick} aria-label="Chat" style={{ position: "relative" }}>
-            <FaCommentDots size={20} />
-            {unreadCount > 0 && <span className="cart-badge">{unreadCount > 9 ? "9+" : unreadCount}</span>}
-          </button>
-        )}
-        <button className="navbar-cart-btn mobile-cart" onClick={() => setIsOpen(true)} aria-label="Cart">
-          <IconCart size={20} />
-          {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
-        </button>
         <button className={`hamburger${menuOpen ? " open" : ""}`} onClick={() => setMenuOpen((o) => !o)} aria-label="Menu">
           <span /><span /><span />
         </button>

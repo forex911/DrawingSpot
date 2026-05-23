@@ -72,9 +72,11 @@ function ArtCard({ item }) {
                     <span className="art-price">{item.price}</span>
                     <span className="art-original-price">{item.originalPrice}</span>
                 </div>
+                {/* Cart feature temporarily disabled
                 <button className={`art-add-to-cart-btn${added ? " added" : ""}`} onClick={handleAdd}>
                     {added ? "Added" : <><IconCart size={13} /> Add to Cart</>}
                 </button>
+                */}
             </div>
         </div>
     );
