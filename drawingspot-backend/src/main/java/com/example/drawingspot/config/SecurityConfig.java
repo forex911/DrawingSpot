@@ -35,8 +35,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Use patterns to allow dynamic matching and local testing
-        configuration.setAllowedOriginPatterns(Arrays.asList(allowedOrigins.split(",")));
+        // Accept all origins for now to completely eliminate CORS misconfigurations
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
