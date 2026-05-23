@@ -386,14 +386,14 @@ function Order() {
                           <p className="order-cart-title">{item.title}</p>
                           <p className="order-cart-artist">{item.artist}</p>
                           <div className="order-qty-row">
-                            <button className="cart-qty-btn" onClick={() => updateQty(item.id, -1)}>−</button>
+                            <button className="cart-qty-btn" type="button" onClick={() => updateQty(item.id, -1)}>−</button>
                             <span className="cart-qty-num">{item.qty}</span>
-                            <button className="cart-qty-btn" onClick={() => updateQty(item.id, 1)}>+</button>
+                            <button className="cart-qty-btn" type="button" onClick={() => updateQty(item.id, 1)}>+</button>
                           </div>
                         </div>
                         <div style={{ textAlign: "right" }}>
                           <p className="order-cart-price">{item.price}</p>
-                          <button className="cart-remove-btn" onClick={() => removeFromCart(item.id)}>✕</button>
+                          <button className="cart-remove-btn" type="button" onClick={() => removeFromCart(item.id)}>✕</button>
                         </div>
                       </li>
                     ))}

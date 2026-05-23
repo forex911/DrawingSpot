@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
     <AuthContext.Provider value={{
       isAuthenticated, login, logout,
       userId, userName, userRole, isGoogleUser,
-      isChatOpen, setIsChatOpen, login // <-- wait I shouldn't duplicate login
+      isChatOpen, setIsChatOpen,
     }}>
       {children}
     </AuthContext.Provider>

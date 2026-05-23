@@ -25,7 +25,7 @@ function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth?.() ?? {};
+  const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -40,7 +40,7 @@ function Login() {
     setLoading(true);
     try {
       const res = await API.post("/auth/login", form);
-      if (login) login(res.data);
+      login(res.data);
       navigate(redirectTo);
     } catch {
       setError("Invalid email or password. Please try again.");
@@ -65,7 +65,7 @@ function Login() {
         //    could never log in with Google because their stored password hash
         //    would never match the google_${sub} password used in the old flow.
         const loginRes = await API.post("/auth/google-login", { name, email, googleId: sub });
-        if (login) login(loginRes.data);
+        login(loginRes.data);
         navigate(redirectTo);
       } catch {
         setError("Google sign-in failed. Please try again.");

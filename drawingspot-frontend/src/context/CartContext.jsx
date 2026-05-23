@@ -36,7 +36,7 @@ export function CartProvider({ children }) {
     const totalItems = items.reduce((s, i) => s + i.qty, 0);
 
     const totalPrice = items.reduce((s, i) => {
-        const num = parseInt(i.price.replace(/[^\d]/g, ""), 10) || 0;
+        const num = parseInt(String(i.price).replace(/[^\d]/g, ""), 10) || 0;
         return s + num * i.qty;
     }, 0);
 
