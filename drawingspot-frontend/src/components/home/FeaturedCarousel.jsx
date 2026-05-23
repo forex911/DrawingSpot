@@ -154,16 +154,25 @@ function FeaturedCarousels() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        API.get("/gallery")
-            .then(res => {
-                const data = Array.isArray(res.data) ? res.data : [];
+        Promise.all([
+            API.get("/gallery"),
+            API.get("/pricing")
+        ])
+            .then(([resGallery, resPricing]) => {
+                const data = Array.isArray(resGallery.data) ? resGallery.data : [];
+                const pricingData = Array.isArray(resPricing.data) ? resPricing.data : [];
                 const featured = data.filter(item => item.isFeatured);
+
+                const getPrice = (item) => {
+                    const rule = pricingData.find(p => p.size === item.size && p.type === item.category && p.colorType === item.colorType);
+                    return rule ? `₹${rule.price.toLocaleString("en-IN")}` : (item.price || "Contact for price");
+                };
 
                 const bwItems = featured.filter(item => item.colorType === "BlackWhite").map(item => ({
                     id: item.id,
                     title: item.description || "Graphite Portrait",
                     artist: "DrawingSpot Artist",
-                    price: item.price || "Contact for price",
+                    price: getPrice(item),
                     originalPrice: item.originalPrice || "",
                     badge: item.size || "A4",
                     img: item.imageUrl.startsWith("http") ? item.imageUrl : `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "")}${item.imageUrl}`
@@ -173,7 +182,7 @@ function FeaturedCarousels() {
                     id: item.id,
                     title: item.description || "Colour Portrait",
                     artist: "DrawingSpot Artist",
-                    price: item.price || "Contact for price",
+                    price: getPrice(item),
                     originalPrice: item.originalPrice || "",
                     badge: item.size || "A4",
                     img: item.imageUrl.startsWith("http") ? item.imageUrl : `${(import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api").replace("/api", "")}${item.imageUrl}`
