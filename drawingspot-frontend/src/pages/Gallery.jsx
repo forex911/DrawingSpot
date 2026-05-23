@@ -18,7 +18,7 @@ function GalleryCard({ art }) {
         onError={(e) => { e.target.src = "https://via.placeholder.com/400x500?text=Image+Not+Found"; }}
       />
       <div className="gallery-item-overlay">
-        <span className="gallery-cat-tag">
+        <span className="gallery-item-category">
           {art.category === "Single" ? <FaHeart style={{ display: "inline-block", marginRight: 4 }} /> : <FaPalette style={{ display: "inline-block", marginRight: 4 }} />}
           {art.category} Portrait
         </span>
