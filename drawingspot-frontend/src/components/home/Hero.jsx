@@ -50,7 +50,7 @@ function Hero() {
           <div className="hero-right">
             <div className="hero-frame-outer">
               <img
-                src="https://i.pinimg.com/736x/15/bd/5e/15bd5e486b8711c761ed385eafa4948c.jpg"
+                src="https://i.pinimg.com/736x/f2/48/ce/f248ceb89caa253c83076bbe2af7f844.jpg"
                 alt="Featured portrait artwork"
               />
               <div className="hero-badge">

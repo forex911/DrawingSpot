@@ -40,11 +40,11 @@ function OrderStepper({ status }) {
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 fontSize: "1.2rem",
                                 background: done
-                                    ? (active ? "var(--gold)" : "rgba(212,175,55,0.18)")
+                                    ? (active ? "var(--gold)" : "rgba(0,0,0,0.08)")
                                     : "var(--card)",
                                 border: `2px solid ${done ? "var(--gold)" : "var(--border)"}`,
                                 transition: "all 0.3s",
-                                boxShadow: active ? "0 0 0 4px rgba(212,175,55,0.2)" : "none",
+                                boxShadow: active ? "0 0 0 4px rgba(0,0,0,0.2)" : "none",
                             }}>
                                 {step.icon}
                             </div>
@@ -75,7 +75,7 @@ function OrderStepper({ status }) {
 
 // ── Status Badge ────────────────────────────────────────────────────────────
 const STATUS_STYLES = {
-    Received: { bg: "rgba(212,175,55,0.15)", color: "#D4AF37" },
+    Received: { bg: "rgba(0,0,0,0.15)", color: "#000000" },
     Sketching: { bg: "rgba(100,149,237,0.15)", color: "#6495ED" },
     Delivered: { bg: "rgba(50,205,80,0.15)", color: "#50C878" },
     Cancelled: { bg: "rgba(255,69,58,0.12)", color: "#FF453A" },
@@ -336,7 +336,7 @@ function MyOrders() {
                                                 {order.status !== "Delivered" && order.status !== "Cancelled" && (
                                                     <div style={{
                                                         padding: "12px 16px", borderRadius: 10, flex: 1, minWidth: 260,
-                                                        background: "rgba(212,175,55,0.07)", border: "1px solid rgba(212,175,55,0.2)",
+                                                        background: "rgba(0,0,0,0.07)", border: "1px solid rgba(0,0,0,0.2)",
                                                     }}>
                                                         <p style={{ fontSize: "0.8rem", color: "var(--gold)", fontWeight: 600, marginBottom: 4, display: "flex", alignItems: "center", gap: 4 }}><FaClock /> What's next?</p>
                                                         <p style={{ fontSize: "0.8rem", color: "var(--muted)" }}>

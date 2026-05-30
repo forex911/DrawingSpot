@@ -171,7 +171,7 @@ section {
 
 .btn-outline-gold:hover {
   background: var(--gold);
-  color: var(--dark);
+  color: #fff;
 }
 
 /* ========================= */

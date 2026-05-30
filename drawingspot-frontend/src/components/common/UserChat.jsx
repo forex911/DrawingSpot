@@ -136,7 +136,7 @@ function UserChat({ conversationUserId, isAdminView = false, isDashboardView = f
                     <div style={{
                         padding: "12px 16px",
                         borderBottom: "1px solid var(--border)",
-                        background: "rgba(212,175,55,0.05)",
+                        background: "rgba(0,0,0,0.05)",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
@@ -165,8 +165,8 @@ function UserChat({ conversationUserId, isAdminView = false, isDashboardView = f
                     }}>
                         <div style={{
                             width: 60, height: 60, borderRadius: "50%",
-                            background: "rgba(212,175,55,0.1)",
-                            border: "1.5px solid rgba(212,175,55,0.3)",
+                            background: "rgba(0,0,0,0.1)",
+                            border: "1.5px solid rgba(0,0,0,0.3)",
                             display: "flex", alignItems: "center", justifyContent: "center",
                             fontSize: "1.5rem", color: "var(--gold)"
                         }}>
@@ -229,7 +229,7 @@ function UserChat({ conversationUserId, isAdminView = false, isDashboardView = f
             <div style={{
                 padding: "12px 16px",
                 borderBottom: "1px solid var(--border)",
-                background: "rgba(212,175,55,0.05)",
+                background: "rgba(0,0,0,0.05)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",

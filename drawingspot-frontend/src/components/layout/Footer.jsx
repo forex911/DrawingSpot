@@ -35,7 +35,7 @@ function Footer() {
       <div className="footer-top">
         {/* Brand */}
         <div className="footer-brand">
-          <div className="logo"><FaPalette style={{ color: "var(--gold)", marginRight: "8px" }} />Drawing<span>Spot</span></div>
+          <div className="logo"><FaPalette style={{ color: "#fff", marginRight: "8px" }} />Drawing<span>Spot</span></div>
           <p>
             Handcrafted portraits that turn your
             most cherished memories into timeless works of art.

@@ -11,7 +11,7 @@ import "../App.css";
 const POLL_INTERVAL = 10000; // auto-refresh every 10 seconds
 
 const STATUS_CONFIG = {
-    Received: { bg: "rgba(212,175,55,0.15)", color: "#D4AF37", icon: <FaMailBulk /> },
+    Received: { bg: "rgba(0,0,0,0.08)", color: "#333", icon: <FaMailBulk /> },
     Sketching: { bg: "rgba(100,149,237,0.15)", color: "#6495ED", icon: <FaPencilAlt /> },
     Delivered: { bg: "rgba(50,205,50,0.15)", color: "#50C878", icon: <FaCheckCircle /> },
     Cancelled: { bg: "rgba(255,69,58,0.12)", color: "#FF453A", icon: <FaTimesCircle /> },
@@ -440,8 +440,8 @@ function AdminPanel() {
                                 const isActive = filter === s;
                                 return (
                                     <div key={s} onClick={() => setFilter(s)} style={{
-                                        background: isActive ? (cfg.bg || "rgba(212,175,55,0.12)") : "var(--card)",
-                                        border: `1.5px solid ${isActive ? (cfg.color || "#D4AF37") : "var(--border)"}`,
+                                        background: isActive ? (cfg.bg || "rgba(0,0,0,0.06)") : "var(--card)",
+                                        border: `1.5px solid ${isActive ? (cfg.color || "#333") : "var(--border)"}`,
                                         borderRadius: 12, padding: "16px 20px", cursor: "pointer",
                                         transition: "all 0.18s",
                                     }}>
@@ -535,7 +535,7 @@ function AdminPanel() {
                                                                         setSelectedUserChat(val.id);
                                                                         setViewMode("Chats");
                                                                     }}
-                                                                    style={{ padding: "4px 8px", fontSize: "0.7rem", borderRadius: 4, background: "rgba(212,175,55,0.15)", border: "1px solid var(--gold)", color: "var(--gold)", cursor: "pointer" }}
+                                                                    style={{ padding: "4px 8px", fontSize: "0.7rem", borderRadius: 4, background: "rgba(0,0,0,0.08)", border: "1px solid var(--gold)", color: "var(--gold)", cursor: "pointer" }}
                                                                 >
                                                                     <FaCommentDots style={{ marginRight: 6 }} /> Message User
                                                                 </button>
@@ -576,7 +576,7 @@ function AdminPanel() {
                                                         disabled={updating === order.id || localPrices[order.id] === undefined || parseFloat(localPrices[order.id]) === order.price}
                                                         style={{
                                                             padding: "6px 12px", borderRadius: 6, fontSize: "0.75rem",
-                                                            background: "var(--gold)", color: "#000", fontWeight: 700,
+                                                            background: "var(--gold)", color: "#fff", fontWeight: 700,
                                                             border: "none", cursor: "pointer",
                                                             opacity: (updating === order.id || localPrices[order.id] === undefined || parseFloat(localPrices[order.id]) === order.price) ? 0.5 : 1
                                                         }}
@@ -691,7 +691,7 @@ function AdminPanel() {
                                                     <div>
                                                         <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "var(--text)", marginBottom: 4 }}>
                                                             {user.name}
-                                                            {user.role === "ADMIN" && <span style={{ marginLeft: 6, fontSize: "0.7rem", background: "var(--gold)", color: "#000", padding: "2px 6px", borderRadius: 4 }}>ADMIN</span>}
+                                                            {user.role === "ADMIN" && <span style={{ marginLeft: 6, fontSize: "0.7rem", background: "var(--gold)", color: "#fff", padding: "2px 6px", borderRadius: 4 }}>ADMIN</span>}
                                                         </div>
                                                         <div style={{ fontSize: "0.75rem", color: "var(--muted)" }}>
                                                             {user.email} · ID: {user.id}
@@ -777,7 +777,7 @@ function AdminPanel() {
                                     ) : (
                                         <div style={{ display: "flex", gap: 8 }}>
                                             <input type="text" value={galleryForm.imageUrl} onChange={e => setGalleryForm({ ...galleryForm, imageUrl: e.target.value })} placeholder="URL (e.g. /img.jpg)" style={{ flex: 1, minWidth: 0 }} />
-                                            <label style={{ background: "var(--gold)", color: "#000", padding: "0 14px", borderRadius: 8, display: "flex", alignItems: "center", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600, flexShrink: 0 }}>
+                                            <label style={{ background: "var(--gold)", color: "#fff", padding: "0 14px", borderRadius: 8, display: "flex", alignItems: "center", cursor: "pointer", fontSize: "0.8rem", fontWeight: 600, flexShrink: 0 }}>
                                                 Upload File
                                                 <input type="file" style={{ display: "none" }} accept="image/*" onChange={e => setGalleryFile(e.target.files[0])} />
                                             </label>
@@ -912,7 +912,7 @@ function AdminPanel() {
                                                         <input type="number" value={editPricingForm.price} onChange={e => setEditPricingForm({ ...editPricingForm, price: e.target.value })} style={{ width: "80px", padding: "6px 10px", borderRadius: 6, border: "1px solid var(--border)", background: "var(--bg)" }} />
                                                     </td>
                                                     <td style={{ padding: "14px 20px", textAlign: "right", display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                                                        <button onClick={handleSavePricing} style={{ background: "var(--gold)", color: "#000", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}>Save</button>
+                                                        <button onClick={handleSavePricing} style={{ background: "var(--gold)", color: "#fff", border: "none", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}>Save</button>
                                                         <button onClick={() => setEditPricingId(null)} style={{ background: "transparent", border: "1.5px solid var(--border)", color: "var(--muted)", borderRadius: 6, padding: "6px 14px", cursor: "pointer", fontSize: "0.78rem", fontWeight: 600 }}>Cancel</button>
                                                     </td>
                                                 </tr>
