@@ -365,7 +365,7 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--gold), #333333);
+  background: linear-gradient(135deg, var(--gold), #b7afaf);
   display: flex;
   align-items: center;
   justify-content: center;
