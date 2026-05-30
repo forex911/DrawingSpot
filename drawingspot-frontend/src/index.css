@@ -7,15 +7,15 @@
 /* CSS DESIGN TOKENS         */
 /* ========================= */
 :root {
-  --bg:        #FCECDD;
-  --gold:      #FF6701;
-  --gold-lt:   #FEA82F;
-  --dark:      #1C1C1C;
-  --charcoal:  #2C2C2C;
-  --muted:     #6B6560;
+  --bg:        #FFFFFF;
+  --gold:      #000000;
+  --gold-lt:   #F5F5F5;
+  --dark:      #000000;
+  --charcoal:  #333333;
+  --muted:     #757575;
   --card-bg:   #FFFFFF;
-  --cream-dk:  #FFC288;
-  --border:    rgba(255,103,1,0.3);
+  --cream-dk:  #F9F9F9;
+  --border:    rgba(0,0,0,0.08);
   --font-head: 'Playfair Display', Georgia, serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --radius:    12px;
@@ -128,19 +128,19 @@ section {
 /* ========================= */
 .btn-primary {
   background: var(--gold);
-  color: var(--dark);
+  color: #FFFFFF;
   padding: 13px 30px;
   border-radius: 50px;
   font-weight: 600;
   font-size: 0.92rem;
   letter-spacing: 0.04em;
-  box-shadow: 0 4px 16px rgba(255,103,1,0.35);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
 .btn-primary:hover {
-  background: #E65C00;
+  background: #333333;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255,103,1,0.45);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
 .btn-outline {
