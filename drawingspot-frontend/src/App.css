@@ -4497,3 +4497,24 @@
     height: 75vh;
   }
 }
+
+/* Admin Orders Layout */
+.orders-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
+    width: 100%;
+    align-items: start;
+}
+
+@media (max-width: 1200px) {
+    .orders-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .orders-container {
+        grid-template-columns: 1fr;
+    }
+}

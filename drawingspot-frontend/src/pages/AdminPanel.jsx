@@ -483,9 +483,9 @@ function AdminPanel() {
 
                         {/* Order Cards */}
                         {!loading && filtered.length > 0 && (
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 24, alignItems: "start" }}>
+                            <div className="orders-container">
                                 {filtered.map((order) => (
-                                    <div key={order.id} style={{ background: "var(--card)", borderRadius: 20, padding: "20px 24px", border: "1px solid var(--border)", boxShadow: "0 4px 12px rgba(0,0,0,0.03)", width: "100%" }}>
+                                    <div key={order.id} className="auth-card" style={{ padding: "20px 24px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
                                             <div>
                                                 <p style={{ fontSize: "0.72rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>
