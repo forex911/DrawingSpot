@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../components/layout/Navbar";
@@ -7,6 +7,8 @@ import API from "../api/axiosConfig";
 import { useAuth } from "../context/AuthContext";
 import { FaUser, FaLock, FaMapMarkerAlt, FaSmile, FaImage } from "react-icons/fa";
 import imageCompression from 'browser-image-compression';
+import Cropper from 'react-easy-crop';
+import getCroppedImg from '../utils/getCroppedImg';
 import "../App.css";
 
 function Dashboard() {
@@ -19,6 +21,11 @@ function Dashboard() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadPhase, setUploadPhase] = useState("");
   const [profileMessage, setProfileMessage] = useState({ text: "", type: "" });
+
+  const [cropImageSrc, setCropImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
   const [profileForm, setProfileForm] = useState({
     name: "",
@@ -85,45 +92,53 @@ function Dashboard() {
     }
   };
 
-  const handleAvatarUpload = async (e) => {
+  const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setCropImageSrc(reader.result);
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+    };
+    e.target.value = null; // reset input
+  };
+
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleUploadCroppedImage = async () => {
+    if (!cropImageSrc || !croppedAreaPixels) return;
 
     setAvatarUploading(true);
     setUploadProgress(0);
     setUploadPhase("Preparing...");
     setProfileMessage({ text: "", type: "" });
 
-    let finalFile = file;
-    if (file.size > 10 * 1024 * 1024) {
-      try {
+    try {
+      const croppedBlob = await getCroppedImg(cropImageSrc, croppedAreaPixels);
+      setCropImageSrc(null); // Close cropper modal
+
+      let finalFile = new File([croppedBlob], "profile.jpg", { type: croppedBlob.type || "image/jpeg" });
+
+      if (finalFile.size > 10 * 1024 * 1024) {
         setUploadPhase("Compressing...");
         const options = { 
           maxSizeMB: 9.5, 
-          maxWidthOrHeight: 4096, 
+          maxWidthOrHeight: 1024,
           useWebWorker: true,
           onProgress: (p) => setUploadProgress(p)
         };
-        const compressedBlob = await imageCompression(file, options);
-        finalFile = new File([compressedBlob], file.name, { type: compressedBlob.type || file.type });
-      } catch (error) {
-        console.error("Compression error:", error);
-        setProfileMessage({ text: "Failed to compress image.", type: "error" });
-        setAvatarUploading(false);
-        return;
+        const compressedBlob = await imageCompression(finalFile, options);
+        finalFile = new File([compressedBlob], "profile.jpg", { type: compressedBlob.type || "image/jpeg" });
       }
-    }
 
-    if (finalFile.size > 10 * 1024 * 1024) {
-      setProfileMessage({ text: "Image exceeds Cloudinary's 10 MB limit. Please use a smaller image.", type: "error" });
-      setAvatarUploading(false);
-      return;
-    }
-
-    setUploadPhase("Uploading...");
-    setUploadProgress(0);
-    try {
-      // Direct upload to Cloudinary
+      setUploadPhase("Uploading...");
+      setUploadProgress(0);
+      
       const fd = new FormData();
       fd.append("file", finalFile);
       fd.append("upload_preset", "DRAWINGSOPT");
@@ -143,7 +158,6 @@ function Dashboard() {
       
       const imageUrl = cloudinaryRes.data.secure_url;
       
-      // Update profile with the new URL
       const res = await API.put("/auth/profile", {
         id: userId,
         profilePicture: imageUrl
@@ -234,20 +248,23 @@ function Dashboard() {
                 
                 {/* Avatar Preview */}
                 <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 8 }}>
-                  <div style={{
-                    width: 72, height: 72, borderRadius: "50%", background: "var(--card-hover)",
-                    display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
-                    border: "2px solid var(--border)"
-                  }}>
-                    {profileForm.profilePicture ? (
-                      <img src={profileForm.profilePicture} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    ) : (
-                      <FaUser size={28} color="var(--muted)" />
-                    )}
-                  </div>
+                  <label style={{ cursor: avatarUploading ? "default" : "pointer", position: "relative" }}>
+                    <div style={{
+                      width: 72, height: 72, borderRadius: "50%", background: "var(--card-hover)",
+                      display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
+                      border: "2px solid var(--border)"
+                    }}>
+                      {profileForm.profilePicture ? (
+                        <img src={profileForm.profilePicture} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <FaUser size={28} color="var(--muted)" />
+                      )}
+                    </div>
+                    <input type="file" accept="image/*" onChange={handleFileSelect} disabled={avatarUploading} style={{ display: "none" }} />
+                  </label>
                   <div className="form-group" style={{ marginBottom: 0, flex: 1 }}>
-                    <label><FaImage style={{ marginRight: 6 }} /> Profile Picture</label>
-                    <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={avatarUploading} />
+                    <h3 style={{ fontSize: "1rem", margin: 0, color: "var(--text)" }}>Profile Picture</h3>
+                    <p style={{ fontSize: "0.8rem", color: "var(--muted)", margin: "4px 0 0" }}>Click the image to change</p>
                     {avatarUploading && (
                       <div style={{ marginTop: 8 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", color: "var(--muted)", marginBottom: 4 }}>
@@ -255,7 +272,7 @@ function Dashboard() {
                           <span>{uploadProgress}%</span>
                         </div>
                         <div style={{ width: "100%", height: 4, background: "rgba(0,0,0,0.05)", borderRadius: 2, overflow: "hidden" }}>
-                          <div style={{ width: `${uploadProgress}%`, height: "100%", background: "var(--gold)", transition: "width 0.2s" }} />
+                          <div style={{ width: `${uploadProgress}%`, height: "100%", background: "#000", transition: "width 0.2s" }} />
                         </div>
                       </div>
                     )}
@@ -391,6 +408,42 @@ function Dashboard() {
       </div>
 
       <Footer />
+      
+      {cropImageSrc && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.8)", zIndex: 1000,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
+        }}>
+          <div style={{ position: "relative", width: "90%", maxWidth: 500, height: 400, background: "#333", borderRadius: 8, overflow: "hidden" }}>
+            <Cropper
+              image={cropImageSrc}
+              crop={crop}
+              zoom={zoom}
+              aspect={1}
+              cropShape="round"
+              showGrid={false}
+              onCropChange={setCrop}
+              onZoomChange={setZoom}
+              onCropComplete={onCropComplete}
+            />
+          </div>
+          <div style={{ marginTop: 20, display: "flex", gap: 16 }}>
+            <button
+              onClick={() => setCropImageSrc(null)}
+              style={{ padding: "10px 24px", borderRadius: 24, border: "none", cursor: "pointer", background: "var(--card)", color: "var(--text)", fontWeight: 600 }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleUploadCroppedImage}
+              style={{ padding: "10px 24px", borderRadius: 24, border: "none", cursor: "pointer", background: "#000", color: "#fff", fontWeight: 600 }}
+            >
+              Apply & Upload
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
