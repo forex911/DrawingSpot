@@ -483,7 +483,7 @@ function AdminPanel() {
 
                         {/* Order Cards */}
                         {!loading && filtered.length > 0 && (
-                            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 20, alignItems: "start" }}>
                                 {filtered.map((order) => (
                                     <div key={order.id} className="auth-card" style={{ padding: "20px 24px" }}>
                                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 14 }}>
