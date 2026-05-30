@@ -40,17 +40,18 @@ function OrderStepper({ status }) {
                                 display: "flex", alignItems: "center", justifyContent: "center",
                                 fontSize: "1.2rem",
                                 background: done
-                                    ? (active ? "var(--gold)" : "rgba(0,0,0,0.08)")
+                                    ? (active ? "#fff" : "#000")
                                     : "var(--card)",
-                                border: `2px solid ${done ? "var(--gold)" : "var(--border)"}`,
+                                border: `2px solid ${done ? "#000" : "var(--border)"}`,
+                                color: done ? (active ? "#000" : "#fff") : "var(--muted)",
                                 transition: "all 0.3s",
-                                boxShadow: active ? "0 0 0 4px rgba(0,0,0,0.2)" : "none",
+                                boxShadow: active ? "0 0 0 4px rgba(0,0,0,0.06)" : "none",
                             }}>
                                 {step.icon}
                             </div>
                             <p style={{
                                 fontSize: "0.72rem", fontWeight: active ? 700 : 500,
-                                color: done ? "var(--gold)" : "var(--muted)",
+                                color: done ? "#000" : "var(--muted)",
                                 marginTop: 6, textAlign: "center", whiteSpace: "nowrap",
                             }}>
                                 {step.label}

@@ -3,22 +3,22 @@ import { IconBrush, IconFrame, IconClock, IconShield } from "../common/Icons";
 
 const BADGES = [
   {
-    icon: <IconBrush size={26} color="var(--gold)" />,
+    icon: <IconBrush size={26} color="#fff" />,
     title: "100% Handcrafted",
     desc: "Each piece is drawn by our professional artists — no digital prints, ever.",
   },
   {
-    icon: <IconFrame size={26} color="var(--gold)" />,
+    icon: <IconFrame size={26} color="#fff" />,
     title: "Premium Framing",
     desc: "Delivered in a beautiful premium-quality frame, ready to hang on your wall.",
   },
   {
-    icon: <IconClock size={26} color="var(--gold)" />,
+    icon: <IconClock size={26} color="#fff" />,
     title: "Fast Turnaround",
     desc: "Most orders completed and shipped within 5–15 business days.",
   },
   {
-    icon: <IconShield size={26} color="var(--gold)" />,
+    icon: <IconShield size={26} color="#fff" />,
     title: "Satisfaction Guarantee",
     desc: "Not happy? We'll redo it until you love it — free revisions, no questions asked.",
   },
