@@ -152,7 +152,7 @@ function MyOrders() {
                 <p className="section-tag">Your Account</p>
                 <h1>My Orders</h1>
                 <p style={{ color: "var(--muted)", textAlign: "center", width: "100%" }}>
-                    {userName ? `Welcome back, ${userName} \u{1F600}` : ""}
+                    {userName ? `Welcome back, ${userName}` : ""}
                 </p>
             </div>
 

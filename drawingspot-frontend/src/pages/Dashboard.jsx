@@ -197,7 +197,7 @@ function Dashboard() {
         <p className="section-tag">Account Settings</p>
         <h1>My Profile</h1>
         <p style={{ color: "var(--muted)", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px" }}>
-          {userName ? <>Welcome back, {userName} <FaSmile style={{ color: "var(--gold)" }} /></> : "Manage your personal information and preferences."}
+          {userName ? <>Welcome back, {userName} </> : "Manage your personal information and preferences."}
         </p>
       </div>
 
