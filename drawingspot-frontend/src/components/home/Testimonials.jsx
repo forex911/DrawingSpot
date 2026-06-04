@@ -3,21 +3,21 @@ import { FaStar } from "react-icons/fa";
 
 const REVIEWS = [
     {
-        stars: 5,
+        stars: 4,
         text: "I ordered a portrait of my parents for their anniversary. The quality was exceptional — every detail was captured perfectly. Will definitely order again!",
         name: "Priya M.",
         location: "Mumbai",
         initials: "PM",
     },
     {
-        stars: 5,
+        stars: 3.5,
         text: "The packaging was gorgeous and the painting arrived in perfect condition. The boho-style piece looks stunning above our fireplace. Highly recommend!",
         name: "Arjun K.",
         location: "Bangalore",
         initials: "AK",
     },
     {
-        stars: 5,
+        stars: 4.5,
         text: "I was skeptical about ordering art online but DrawingSpot exceeded all expectations. The line art portrait is exactly what I imagined, absolutely beautiful.",
         name: "Sneha R.",
         location: "Delhi",
