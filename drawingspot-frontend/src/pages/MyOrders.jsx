@@ -120,8 +120,10 @@ function MyOrders() {
             // Sort newest first
             data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setOrders(data);
-        } catch {
-            setError("Couldn't load your orders. Make sure the server is running.");
+        } catch (err) {
+            console.error("Order fetch error:", err);
+            const serverMsg = err.response?.data?.message || err.response?.data?.error || err.message;
+            setError(`Couldn't load your orders. Server says: ${serverMsg}`);
         } finally {
             setLoading(false);
         }
