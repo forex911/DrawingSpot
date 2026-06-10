@@ -28,16 +28,16 @@ public class WhatsAppServiceImpl implements WhatsAppService {
     private final OrderRepository orderRepository;
     private RestTemplate restTemplate = new RestTemplate();
 
-    @Value("${whatsapp.api.url}")
+    @Value("${whatsapp.api.url:https://graph.facebook.com/v17.0}")
     private String apiUrl;
 
-    @Value("${whatsapp.api.token}")
+    @Value("${whatsapp.api.token:}")
     private String apiToken;
 
-    @Value("${whatsapp.api.phone-number-id}")
+    @Value("${whatsapp.api.phone-number-id:}")
     private String phoneNumberId;
 
-    @Value("${whatsapp.admin.phone-number}")
+    @Value("${whatsapp.admin.phone-number:}")
     private String adminPhoneNumber;
 
     @Override
