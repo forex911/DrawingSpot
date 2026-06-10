@@ -4,7 +4,9 @@ import com.example.drawingspot.model.Order;
 import com.example.drawingspot.model.Pricing;
 import com.example.drawingspot.repository.OrderRepository;
 import com.example.drawingspot.repository.PricingRepository;
+import com.example.drawingspot.repository.UserRepository;
 import com.example.drawingspot.service.OrderService;
+import com.example.drawingspot.service.WhatsAppService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +19,26 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final PricingRepository pricingRepository;
+    private final WhatsAppService whatsAppService;
+    private final UserRepository userRepository;
 
     @Override
     public Order createOrder(Order order) {
+
+        if (order.getUser() != null && order.getUser().getId() != null) {
+            com.example.drawingspot.model.User user = userRepository.findById(order.getUser().getId())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            
+            boolean isComplete = user.getPhoneNumber() != null && !user.getPhoneNumber().trim().isEmpty() &&
+                                 user.getAddress() != null && !user.getAddress().trim().isEmpty() &&
+                                 user.getCity() != null && !user.getCity().trim().isEmpty() &&
+                                 user.getPincode() != null && !user.getPincode().trim().isEmpty();
+            
+            if (!isComplete) {
+                throw new RuntimeException("INCOMPLETE_PROFILE");
+            }
+            order.setUser(user);
+        }
 
         // Auto price calculation — falls back to 0.0 if pricing table is not seeded
         try {
@@ -37,7 +56,13 @@ public class OrderServiceImpl implements OrderService {
             order.setPrice(0.0);
         }
 
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        
+        // Trigger async WhatsApp notifications
+        whatsAppService.sendCustomerOrderConfirmationAsync(savedOrder.getId());
+        whatsAppService.sendAdminOrderAlertAsync(savedOrder.getId());
+
+        return savedOrder;
     }
 
     @Override

@@ -36,11 +36,32 @@ public class Order {
 
     private LocalDateTime createdAt;
 
+    @Column(name = "customer_whatsapp_sent")
+    private Boolean customerWhatsappSent;
+
+    @Column(name = "admin_whatsapp_sent")
+    private Boolean adminWhatsappSent;
+
+    @Column(name = "customer_whatsapp_sent_at")
+    private LocalDateTime customerWhatsappSentAt;
+
+    @Column(name = "admin_whatsapp_sent_at")
+    private LocalDateTime adminWhatsappSentAt;
+
+    @Column(name = "notification_error", length = 1000)
+    private String notificationError;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         if (this.status == null) {
             this.status = "Received";
+        }
+        if (this.customerWhatsappSent == null) {
+            this.customerWhatsappSent = false;
+        }
+        if (this.adminWhatsappSent == null) {
+            this.adminWhatsappSent = false;
         }
     }
 

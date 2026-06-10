@@ -9,7 +9,7 @@ import { useAuth } from "../context/AuthContext";
 import { IconUpload, IconEye, IconRefresh, IconFrame, IconTruck, IconPencil, IconPalette } from "../components/common/Icons";
 import API from "../api/axiosConfig";
 import imageCompression from 'browser-image-compression';
-import { FaHeart, FaPalette, FaCheckCircle, FaShoppingCart, FaMagic, FaCheck, FaTimes } from "react-icons/fa";
+import { FaHeart, FaPalette, FaCheckCircle, FaShoppingCart, FaMagic, FaCheck, FaTimes, FaUser } from "react-icons/fa";
 
 const PORTRAIT_TYPES = [
   { value: "bw", label: <><FaHeart style={{ display: "inline-block", marginRight: 4 }} /> Black & White (Pencil / Graphite)</> },
@@ -43,6 +43,7 @@ function Order() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadPhase, setUploadPhase] = useState("");
   const [autoFilled, setAutoFilled] = useState(false);
+  const [profileComplete, setProfileComplete] = useState(true);
 
   // ── Auto-fill form from cart items ─────────────────────────────────────
   useEffect(() => {
@@ -92,6 +93,9 @@ function Order() {
           if (fullAddress) {
             setForm((prev) => ({ ...prev, deliveryAddress: fullAddress }));
           }
+
+          const isComplete = data.phoneNumber && data.address && data.city && data.pincode;
+          setProfileComplete(!!isComplete);
         })
         .catch((err) => console.error("Could not fetch user profile for address fill", err));
     }
@@ -254,8 +258,12 @@ function Order() {
       console.error("Order submission error:", err);
       console.error("Response status:", err.response?.status);
       console.error("Response data:", err.response?.data);
-      const serverError = err.response?.data?.error || err.response?.data || "Failed to submit order. Please try again.";
-      setError(typeof serverError === 'string' ? serverError : "An unexpected error occurred.");
+      const serverError = err.response?.data?.error || err.response?.data || err.response?.data?.message || "Failed to submit order. Please try again.";
+      if (typeof serverError === 'string' && serverError.includes("INCOMPLETE_PROFILE")) {
+          setError("Your profile is incomplete. Please go to your dashboard to complete it.");
+      } else {
+          setError(typeof serverError === 'string' ? serverError : "An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -304,8 +312,30 @@ function Order() {
         </div>
       )}
 
+      {/* ── Profile Completion Gate ── */}
+      {isAuthenticated && !profileComplete && (
+        <div className="auth-center" style={{ minHeight: "50vh" }}>
+          <div className="auth-card" style={{ textAlign: "center", padding: "52px 40px", maxWidth: 440 }}>
+            <div className="auth-brand-icon">
+              <FaUser style={{ color: "var(--gold)", fontSize: 24, marginTop: 4 }} />
+            </div>
+            <h2 style={{ fontFamily: "var(--font-head)", marginBottom: 10 }}>Complete Your Profile</h2>
+            <p style={{ color: "var(--muted)", marginBottom: 28, fontSize: "0.95rem" }}>
+              Please complete your profile information (Phone Number, Address, etc.) to place an order. This ensures smooth delivery and tracking.
+            </p>
+            <button
+              className="btn-primary"
+              style={{ width: "100%", padding: "13px", borderRadius: "8px", fontSize: "1rem", marginBottom: 14 }}
+              onClick={() => navigate("/dashboard")}
+            >
+              Go to Profile →
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── Main content — authenticated users only ── */}
-      {isAuthenticated && (
+      {isAuthenticated && profileComplete && (
         submitted ? (
           <div className="auth-center">
             <div className="auth-card" style={{ textAlign: "center", padding: "52px 40px" }}>
